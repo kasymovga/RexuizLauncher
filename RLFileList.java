@@ -11,7 +11,6 @@ public class RLFileList extends HashMap<String, RLFileListItem> {
 			br = new BufferedReader(new InputStreamReader(in));
 			String line = null;
 			while ((line = br.readLine()) != null) {
-				line.replace("/", File.separator);
 				String[] separated = line.split("\\|");
 				if (separated.length == 3) {
 					size = Integer.parseInt(separated[1]);

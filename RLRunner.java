@@ -22,7 +22,7 @@ public class RLRunner extends RLFetcher {
 		String updateList = rexuizHomeDir + File.separator + "index.lst.update";
 		int i;
 		for (i = 0; i < RLConstants.syncURLs.length; i++) {
-			if (this.download(RLConstants.syncURLs[i] + File.separator + "index.lst", updateList, 0))
+			if (this.download(RLConstants.syncURLs[i] + "/" + "index.lst", updateList, 0))
 			{
 				syncURL = RLConstants.syncURLs[i];
 				break;
@@ -58,7 +58,9 @@ public class RLRunner extends RLFetcher {
 			while (iterator.hasNext()) {
 				mentry = iterator.next();
 				itemNew = mentry.getValue();
-				if (!this.download(syncURL + File.separator + mentry.getKey(), rexuizHomeDir + File.separator + mentry.getKey(), itemNew.size)) {
+				if (!this.download(syncURL + "/" + mentry.getKey(),
+						(rexuizHomeDir + File.separator + mentry.getKey()).replace("/",
+						File.separator), itemNew.size)) {
 					notInstalled = true;
 					return;
 				}
