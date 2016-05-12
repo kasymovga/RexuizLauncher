@@ -1,3 +1,5 @@
+package com.rexuiz.gui;
+
 import javax.swing.*;
 import java.awt.*;
 

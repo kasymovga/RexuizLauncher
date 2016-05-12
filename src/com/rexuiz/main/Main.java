@@ -1,3 +1,5 @@
+package com.rexuiz.main;
+
 public class Main extends Runner {
 
 	public static void main(String[] args) {

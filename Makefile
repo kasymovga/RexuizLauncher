@@ -2,7 +2,7 @@ JAVAC=javac
 JAVAOPTS=-Xlint:unchecked
 .PHONY: all
 
-CLASS_FILES=Main.class GraphicalUserInterface.class Fetcher.class Runner.class AppConstants.class FileList.class FileListItem.class
+CLASS_FILES=com.rexuiz.main.Main.class com.rexuiz.gui.GraphicalUserInterface.class com.rexuiz.main.Fetcher.class com.rexuiz.main.Runner.class com.rexuiz.main.AppConstants.class com.rexuiz.file.FileList.class com.rexuiz.file.FileListItem.class
 
 all: RexuizLauncher.jar
 
