@@ -39,13 +39,13 @@ public class Runner extends Fetcher {
 			mentry = iterator.next();
 			itemOld = mentry.getValue();
 			itemNew = newFileList.get(mentry.getKey());
-			if (itemNew != null && itemNew.hash.equals(itemOld.hash) && itemNew.size == itemNew.size) {
+			if (itemNew != null && itemNew.hash.equals(itemOld.hash)) {
 				newFileList.remove(mentry.getKey());
 			}
 		}
 
 		iterator = newFileList.entrySet().iterator();
-		if (iterator.hasNext() && this.ask(notInstalled ? "Install Rexuiz now?" : "Update available. Do you want install it?")) {
+		if (iterator.hasNext() && ask(notInstalled ? "Install Rexuiz now?" : "Update available. Do you want install it?")) {
 			long totalSize = 0;
 			while (iterator.hasNext()) {
 				mentry = iterator.next();
