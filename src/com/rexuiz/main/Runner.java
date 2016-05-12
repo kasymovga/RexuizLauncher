@@ -27,7 +27,7 @@ public class Runner extends Fetcher {
 		String updateList = rexuizHomeDir + File.separator + "index.lst.update";
 		int i;
 		for (i = 0; i < AppConstants.syncURLs.length; i++) {
-			if (download(AppConstants.syncURLs[i] + "index.lst", updateList))
+			if (download(AppConstants.syncURLs[i] + "index.lst", updateList, "", 0))
 			{
 				syncURL = AppConstants.syncURLs[i];
 				break;
@@ -64,7 +64,7 @@ public class Runner extends Fetcher {
 				mentry = iterator.next();
 				if (!download(syncURL + mentry.getKey(),
 						(rexuizHomeDir + File.separator + mentry.getKey()).replace("/",
-						File.separator))) {
+						File.separator), mentry.getValue().hash, mentry.getValue().size)) {
 					notInstalled = true;
 					return;
 				}
