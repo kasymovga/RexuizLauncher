@@ -1,3 +1,7 @@
+package com.rexuiz.main;
+
+import com.rexuiz.gui.GraphicalUserInterface;
+
 import java.io.*;
 import java.net.*;
 import java.lang.Exception;

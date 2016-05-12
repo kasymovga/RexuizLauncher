@@ -1,3 +1,5 @@
+package com.rexuiz.file;
+
 public class FileListItem {
 	final public String hash;
 	final public long size;

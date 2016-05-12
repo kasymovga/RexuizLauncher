@@ -1,3 +1,8 @@
+package com.rexuiz.main;
+
+import com.rexuiz.file.FileList;
+import com.rexuiz.file.FileListItem;
+
 import java.io.*;
 import java.util.*;
 
