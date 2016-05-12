@@ -15,6 +15,11 @@ public class Runner extends Fetcher {
 		wasInstalled = false;
 		rexuizHomeDir = System.getProperty("user.home") + File.separator + AppConstants.homeDir;
 	}
+
+	private boolean checkNewFile(FileListItem itemNew, FileListItem itemOld) {
+		return itemNew != null && itemNew.hash.equals(itemOld.hash);
+	}
+
 	public void checkUpdate() {
 		this.status("Check for updates");
 		String oldList = rexuizHomeDir + File.separator + "index.lst";
@@ -44,7 +49,7 @@ public class Runner extends Fetcher {
 			mentry = iterator.next();
 			itemOld = mentry.getValue();
 			itemNew = newFileList.get(mentry.getKey());
-			if (itemNew != null && itemNew.hash.equals(itemOld.hash)) {
+			if (checkNewFile(itemNew, itemOld)) {
 				newFileList.remove(mentry.getKey());
 			}
 		}
@@ -114,7 +119,7 @@ public class Runner extends Fetcher {
 		}
 	}
 	public void run() {
-		this.showMainDialog();
+		showMainDialog();
 		checkUpdate();
 		if (wasInstalled) {
 			if (this.ask("Rexuiz installed. Do you want run it?"))
