@@ -20,12 +20,32 @@ public class RLGUI extends JFrame {
 	public void showMainDialog() {
 		this.setVisible(true);
 	}
+	private String statusSafeMessage;
+	private final Runnable statusSafe = new Runnable() {
+		public void run() {
+			statusLabel.setText(statusSafeMessage);
+		}
+	};
 	public void status(String message) {
-		statusLabel.setText(message);
+		statusSafeMessage = message;
+		try {
+			SwingUtilities.invokeAndWait(statusSafe);
+		} catch (Exception ex) {
+		}
 	}
+	private double progressSafeValue;
+	private final Runnable progressSafe = new Runnable() {
+		public void run() {
+			progressBar.setValue((int)(progressSafeValue * 100));
+			progressBar.setString(String.format("%3.1f%%", progressSafeValue * 100));
+		}
+	};
 	public void progress(double f) {
-		progressBar.setValue((int)(f * 100));
-		progressBar.setString(String.format("%3.1f%%", f * 100));
+		progressSafeValue = f;
+		try {
+			SwingUtilities.invokeAndWait(progressSafe);
+		} catch (Exception ex) {
+		}
 	}
 	public boolean ask(String question) {
 		JFrame frame = new JFrame();
