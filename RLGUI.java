@@ -28,9 +28,8 @@ public class RLGUI extends JFrame {
 		infoLabel.setText(String.format("%3.1f%%", f * 100));
 	}
 	public boolean ask(String question) {
-		//return true;
 		JFrame frame = new JFrame();
-		int answer = JOptionPane.showConfirmDialog(frame, question);
+		int answer = JOptionPane.showConfirmDialog(frame, question, "", JOptionPane.YES_NO_OPTION);
 		if (answer == JOptionPane.YES_OPTION) {
 			System.out.println("true");
 			return true;
