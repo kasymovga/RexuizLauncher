@@ -17,11 +17,8 @@ public class RLGUI extends JFrame {
 		this.setSize(320, 120);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-	public void run() {
+	public void showMainDialog() {
 		this.setVisible(true);
-		this.whenStarted();
-	}
-	public void whenStarted() {
 	}
 	public void status(String message) {
 		statusLabel.setText(message);

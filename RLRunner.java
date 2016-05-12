@@ -109,8 +109,8 @@ public class RLRunner extends RLFetcher {
 		} catch (Exception ex) {
 		}
 	}
-	public void whenStarted() {
-		System.out.println("RLRunner: whenStarted()");
+	public void run() {
+		this.showMainDialog();
 		checkUpdate();
 		if (wasInstalled) {
 			if (this.ask("Rexuiz installed. Do you want run it?"))
