@@ -4,27 +4,31 @@ import java.awt.*;
 public class GraphicalUserInterface extends JFrame {
 	private JLabel statusLabel;
 	private JProgressBar progressBar;
+	private String statusSafeMessage;
+	private double progressSafeValue;
+
 	public GraphicalUserInterface() {
-		this.setTitle("Rexuiz Launcher");
+		setTitle("Rexuiz Launcher");
 		statusLabel = new JLabel("Preparing to launch...", SwingConstants.CENTER);
 		progressBar = new JProgressBar(0, 100);
 		progressBar.setStringPainted(true);
-		this.setLayout(new GridLayout(2, 2));
-		this.getContentPane().add(statusLabel);
-		this.getContentPane().add(progressBar);
-		this.pack();
-		this.setSize(320, 120);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLayout(new GridLayout(2, 2));
+		getContentPane().add(statusLabel);
+		getContentPane().add(progressBar);
+		pack();
+		setSize(320, 120);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	public void showMainDialog() {
 		this.setVisible(true);
 	}
-	private String statusSafeMessage;
+
 	private final Runnable statusSafe = new Runnable() {
 		public void run() {
 			statusLabel.setText(statusSafeMessage);
 		}
 	};
+
 	public void status(String message) {
 		statusSafeMessage = message;
 		try {
@@ -32,7 +36,7 @@ public class GraphicalUserInterface extends JFrame {
 		} catch (Exception ex) {
 		}
 	}
-	private double progressSafeValue;
+
 	private final Runnable progressSafe = new Runnable() {
 		public void run() {
 			progressBar.setValue((int)(progressSafeValue * 100));
