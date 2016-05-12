@@ -1,4 +1,4 @@
-public class RLConstants {
+public class AppConstants {
 	public static String[] syncURLs = {
 			"http://108.61.164.188/RexuizLauncher/"
 	};

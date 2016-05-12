@@ -2,17 +2,21 @@ import java.io.*;
 import java.net.*;
 import java.lang.Exception;
 
-public class RLFetcher extends RLGUI {
+public class Fetcher extends GraphicalUserInterface {
 	private long totalSize;
 	private long downloaded;
-	public RLFetcher() {
+    private final int BLOCK_SIZE = 1024;
+
+	public Fetcher() {
 		this.setDownloadSize(0);
 	}
+
 	public void setDownloadSize(long newTotalSize) {
 		downloaded = 0;
 		totalSize = newTotalSize;
 	}
-	public boolean download(String source, String destination, long size) {
+
+	public boolean download(String source, String destination) {
 		boolean success = true;
 		BufferedInputStream in = null;
 		FileOutputStream fout = null;
@@ -23,9 +27,9 @@ public class RLFetcher extends RLGUI {
 			in = new BufferedInputStream(new URL(source).openStream());
 			fout = new FileOutputStream(destination);
 
-			final byte data[] = new byte[1024];
+			final byte data[] = new byte[BLOCK_SIZE];
 			int count;
-			while ((count = in.read(data, 0, 1024)) > 0) {
+			while ((count = in.read(data, 0, BLOCK_SIZE)) > 0) {
 				downloaded += count;
 				fout.write(data, 0, count);
 				if (totalSize != 0)
@@ -39,13 +43,13 @@ public class RLFetcher extends RLGUI {
 				try {
 					in.close();
 				} catch (Exception ex) {
-				};
+				}
 			}
 			if (fout != null) {
 				try {
 					fout.close();
 				} catch (Exception ex) {
-				};
+				}
 			}
 		}
 		return success;

@@ -1,7 +1,7 @@
-public class RLFileListItem {
+public class FileListItem {
 	final public String hash;
 	final public long size;
-	public RLFileListItem(String hash, long size)
+	public FileListItem(String hash, long size)
 	{
 		this.hash = hash;
 		this.size = size;

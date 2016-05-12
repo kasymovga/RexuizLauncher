@@ -1,11 +1,10 @@
 import javax.swing.*;
-import java.awt.event.*;
 import java.awt.*;
 
-public class RLGUI extends JFrame {
+public class GraphicalUserInterface extends JFrame {
 	private JLabel statusLabel;
 	private JProgressBar progressBar;
-	public RLGUI() {
+	public GraphicalUserInterface() {
 		this.setTitle("Rexuiz Launcher");
 		statusLabel = new JLabel("Preparing to launch...", SwingConstants.CENTER);
 		progressBar = new JProgressBar(0, 100);

@@ -1,39 +1,39 @@
 import java.io.*;
 import java.util.*;
 
-public class RLRunner extends RLFetcher {
+public class Runner extends Fetcher {
 	String rexuizHomeDir;
 	boolean notInstalled;
 	boolean wasInstalled;
-	public RLRunner() {
+	public Runner() {
 		notInstalled = false;
 		wasInstalled = false;
-		rexuizHomeDir = System.getProperty("user.home") + File.separator + RLConstants.homeDir;
+		rexuizHomeDir = System.getProperty("user.home") + File.separator + AppConstants.homeDir;
 	}
 	public void checkUpdate() {
 		this.status("Check for updates");
 		String oldList = rexuizHomeDir + File.separator + "index.lst";
-		RLFileList oldFileList = new RLFileList(oldList);
-		Iterator<Map.Entry<String, RLFileListItem>> iterator;
+		FileList oldFileList = new FileList(oldList);
+		Iterator<Map.Entry<String, FileListItem>> iterator;
 		iterator = oldFileList.entrySet().iterator();
 		if (!iterator.hasNext())
 			notInstalled = true;
 		String syncURL = "";
 		String updateList = rexuizHomeDir + File.separator + "index.lst.update";
 		int i;
-		for (i = 0; i < RLConstants.syncURLs.length; i++) {
-			if (this.download(RLConstants.syncURLs[i] + "index.lst", updateList, 0))
+		for (i = 0; i < AppConstants.syncURLs.length; i++) {
+			if (download(AppConstants.syncURLs[i] + "index.lst", updateList))
 			{
-				syncURL = RLConstants.syncURLs[i];
+				syncURL = AppConstants.syncURLs[i];
 				break;
 			}
 		}
-		if (i == RLConstants.syncURLs.length && notInstalled)
+		if (i == AppConstants.syncURLs.length && notInstalled)
 			return;
 
-		RLFileListItem itemOld, itemNew;
-		Map.Entry<String, RLFileListItem> mentry;
-		RLFileList newFileList = new RLFileList(updateList);
+		FileListItem itemOld, itemNew;
+		Map.Entry<String, FileListItem> mentry;
+		FileList newFileList = new FileList(updateList);
 		iterator = oldFileList.entrySet().iterator();
 		while (iterator.hasNext()) {
 			mentry = iterator.next();
@@ -57,10 +57,9 @@ public class RLRunner extends RLFetcher {
 			this.status("Downloading game data");
 			while (iterator.hasNext()) {
 				mentry = iterator.next();
-				itemNew = mentry.getValue();
-				if (!this.download(syncURL + mentry.getKey(),
+				if (!download(syncURL + mentry.getKey(),
 						(rexuizHomeDir + File.separator + mentry.getKey()).replace("/",
-						File.separator), itemNew.size)) {
+						File.separator))) {
 					notInstalled = true;
 					return;
 				}
@@ -85,16 +84,16 @@ public class RLRunner extends RLFetcher {
 		}
 		if (osName.contains("win")) {
 			if (is64) {
-				rexuizExe += RLConstants.runExeWin64;
+				rexuizExe += AppConstants.runExeWin64;
 			} else {
-				rexuizExe += RLConstants.runExeWin32;
+				rexuizExe += AppConstants.runExeWin32;
 			}
 			System.out.println("windows detected");
 		} else if (osName.contains("linux")) {
 			if (is64) {
-				rexuizExe += RLConstants.runExeLinux64;
+				rexuizExe += AppConstants.runExeLinux64;
 			} else {
-				rexuizExe += RLConstants.runExeLinux32;
+				rexuizExe += AppConstants.runExeLinux32;
 			}
 			System.out.println("linux detected");
 			(new File(rexuizExe)).setExecutable(true, false);
