@@ -26,15 +26,12 @@ public class Fetcher extends GraphicalUserInterface {
 		BufferedInputStream in = null;
 		FileOutputStream fout = null;
 		if (hash.length() > 0 && FileListItem.checkFile(destination, hash, size)) {
-			System.out.println("File " + destination + " already downloaded, skipped");
 			downloaded += size;
 			if (totalSize != 0)
 				this.progress((double)downloaded / (double)totalSize);
 			return true;
 		}
 		try {
-			System.out.println("Source: ".concat(source));
-			System.out.println("Destination: ".concat(destination));
 			(new File(destination)).getParentFile().mkdirs();
 			in = new BufferedInputStream(new URL(source).openStream());
 			fout = new FileOutputStream(destination);
@@ -48,7 +45,6 @@ public class Fetcher extends GraphicalUserInterface {
 					this.progress((double)downloaded / (double)totalSize);
 			}
 		} catch (Exception ex) {
-			System.out.println("Download failed: " + source + " -> " + destination);
 			success = false;
 		} finally {
 			if (in != null) {

@@ -56,10 +56,8 @@ public class GraphicalUserInterface extends JFrame {
 		JFrame frame = new JFrame();
 		int answer = JOptionPane.showConfirmDialog(frame, question, "", JOptionPane.YES_NO_OPTION);
 		if (answer == JOptionPane.YES_OPTION) {
-			System.out.println("true");
 			return true;
 		}
-		System.out.println("false");
 		return false;
 	}
 }

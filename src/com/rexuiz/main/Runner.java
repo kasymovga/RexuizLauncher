@@ -85,7 +85,6 @@ public class Runner extends Fetcher {
 		boolean is64 = false;
 		if (osArch.contains("64")) {
 			is64 = true;
-			System.out.println("x86_64 detected");
 		}
 		if (osName.contains("win")) {
 			if (is64) {
@@ -93,20 +92,17 @@ public class Runner extends Fetcher {
 			} else {
 				rexuizExe += AppConstants.runExeWin32;
 			}
-			System.out.println("windows detected");
 		} else if (osName.contains("linux")) {
 			if (is64) {
 				rexuizExe += AppConstants.runExeLinux64;
 			} else {
 				rexuizExe += AppConstants.runExeLinux32;
 			}
-			System.out.println("linux detected");
 			(new File(rexuizExe)).setExecutable(true, false);
 		}
 
 
 		String[] cmd = { rexuizExe };
-		System.out.println("rexuizExe=" + rexuizExe);
 		try {
 			Process p = Runtime.getRuntime().exec(cmd);
 			p.waitFor();
