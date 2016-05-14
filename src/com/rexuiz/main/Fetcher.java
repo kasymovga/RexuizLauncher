@@ -45,6 +45,7 @@ public class Fetcher extends GraphicalUserInterface {
 					this.progress((double)downloaded / (double)totalSize);
 			}
 		} catch (Exception ex) {
+			message("Downloading failed :\n" + source + " -> " + destination + "\n" + ex.getMessage());
 			success = false;
 		} finally {
 			if (in != null) {

@@ -107,6 +107,7 @@ public class Runner extends Fetcher {
 			Process p = Runtime.getRuntime().exec(cmd);
 			p.waitFor();
 		} catch (Exception ex) {
+			message("Execute failed:\n" + rexuizExe + "\n" + ex.getMessage());
 		}
 	}
 	public void run() {

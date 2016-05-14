@@ -61,4 +61,7 @@ public class GraphicalUserInterface extends JFrame {
 		}
 		return false;
 	}
+	public void message(String msg) {
+		JOptionPane.showMessageDialog(this, msg);
+	}
 }
