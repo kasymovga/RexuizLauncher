@@ -20,6 +20,7 @@ public class GraphicalUserInterface extends JFrame {
 		pack();
 		setSize(320, 120);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
 	}
 	public void showMainDialog() {
 		this.setVisible(true);
