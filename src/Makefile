@@ -14,4 +14,4 @@ clean :
 
 RexuizLauncher.jar : $(CLASS_FILES) MANIFEST.MF
 	rm -f $@
-	jar cfm $@ MANIFEST.MF $(CLASS_FILES)
+	jar cfm $@ MANIFEST.MF `find -name \*class`
