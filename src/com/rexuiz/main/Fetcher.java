@@ -64,6 +64,6 @@ public class Fetcher extends GraphicalUserInterface {
 				}
 			}
 		}
-		return success;
+		return (hash.length() > 0 ? FileListItem.checkFile(destination, hash, size) : true);
 	}
 }
