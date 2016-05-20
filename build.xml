@@ -1,0 +1,20 @@
+<project>
+    <target name="clean">
+        <delete dir="build"/>
+    </target>
+    <target name="compile">
+        <mkdir dir="build/classes"/>
+        <javac srcdir="src" destdir="build/classes"/>
+    </target>
+    <target name="jar" depends="compile">
+        <mkdir dir="build/jar"/>
+        <jar destfile="build/jar/RexuizLauncher.jar" basedir="build/classes">
+            <manifest>
+                <attribute name="Main-Class" value="com.rexuiz.main.Main"/>
+            </manifest>
+        </jar>
+    </target>
+    <target name="run" depends="jar">
+        <java jar="build/jar/RexuizLauncher.jar" fork="true"/>
+    </target>
+</project>
