@@ -20,6 +20,7 @@ public class GraphicalUserInterface extends JFrame {
 		pack();
 		setSize(320, 120);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
 	}
 	public void showMainDialog() {
 		this.setVisible(true);
@@ -56,10 +57,11 @@ public class GraphicalUserInterface extends JFrame {
 		JFrame frame = new JFrame();
 		int answer = JOptionPane.showConfirmDialog(frame, question, "", JOptionPane.YES_NO_OPTION);
 		if (answer == JOptionPane.YES_OPTION) {
-			System.out.println("true");
 			return true;
 		}
-		System.out.println("false");
 		return false;
+	}
+	public void message(String msg) {
+		JOptionPane.showMessageDialog(this, msg);
 	}
 }

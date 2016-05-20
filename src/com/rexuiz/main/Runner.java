@@ -7,6 +7,9 @@ import java.io.*;
 import java.util.*;
 
 public class Runner extends Fetcher {
+	public class RunnerException extends Exception {
+		public RunnerException(String message) { super(message); }
+	}
 	String rexuizHomeDir;
 	boolean notInstalled;
 	boolean wasInstalled;
@@ -15,12 +18,7 @@ public class Runner extends Fetcher {
 		wasInstalled = false;
 		rexuizHomeDir = System.getProperty("user.home") + File.separator + AppConstants.homeDir;
 	}
-
-	private boolean checkNewFile(FileListItem itemNew, FileListItem itemOld) {
-		return itemNew != null && itemNew.hash.equals(itemOld.hash);
-	}
-
-	public void checkUpdate() {
+	public void checkUpdate() throws Exception, FetcherException, FileList.FileListException, FileListItem.FileListItemException {
 		this.status("Check for updates");
 		String oldList = rexuizHomeDir + File.separator + "index.lst";
 		FileList oldFileList = new FileList(oldList);
@@ -32,10 +30,11 @@ public class Runner extends Fetcher {
 		String updateList = rexuizHomeDir + File.separator + "index.lst.update";
 		int i;
 		for (i = 0; i < AppConstants.syncURLs.length; i++) {
-			if (download(AppConstants.syncURLs[i] + "index.lst", updateList))
-			{
+			try {
+				download(AppConstants.syncURLs[i] + "index.lst", updateList, "", 0);
 				syncURL = AppConstants.syncURLs[i];
 				break;
+			} catch (Exception ex) {
 			}
 		}
 		if (i == AppConstants.syncURLs.length && notInstalled)
@@ -49,7 +48,7 @@ public class Runner extends Fetcher {
 			mentry = iterator.next();
 			itemOld = mentry.getValue();
 			itemNew = newFileList.get(mentry.getKey());
-			if (checkNewFile(itemNew, itemOld)) {
+			if (itemNew != null && itemNew.hash.equals(itemOld.hash)) {
 				newFileList.remove(mentry.getKey());
 			}
 		}
@@ -57,6 +56,7 @@ public class Runner extends Fetcher {
 		iterator = newFileList.entrySet().iterator();
 		if (iterator.hasNext() && ask(notInstalled ? "Install Rexuiz now?" : "Update available. Do you want install it?")) {
 			long totalSize = 0;
+			String filePath;
 			while (iterator.hasNext()) {
 				mentry = iterator.next();
 				itemNew = mentry.getValue();
@@ -65,15 +65,16 @@ public class Runner extends Fetcher {
 			iterator = newFileList.entrySet().iterator();
 			this.setDownloadSize(totalSize);
 			this.status("Downloading game data");
+			notInstalled = true;
 			while (iterator.hasNext()) {
 				mentry = iterator.next();
+				filePath = (rexuizHomeDir + File.separator + mentry.getKey()).replace("/", File.separator);
 				if (!download(syncURL + mentry.getKey(),
-						(rexuizHomeDir + File.separator + mentry.getKey()).replace("/",
-						File.separator))) {
-					notInstalled = true;
-					return;
+						filePath, mentry.getValue().hash, mentry.getValue().size)) {
+					throw new RunnerException(filePath + ": file check failed");
 				}
 			}
+			notInstalled = false;
 			(new File(oldList)).delete();
 			(new File(updateList)).renameTo(new File(oldList));
 			if (notInstalled) {
@@ -82,7 +83,7 @@ public class Runner extends Fetcher {
 			}
 		}
 	}
-	void runRexuiz() {
+	void runRexuiz() throws RunnerException {
 		this.status("Running");
 		String rexuizExe = rexuizHomeDir + File.separator;
 		String osName = System.getProperty("os.name").toLowerCase();
@@ -90,7 +91,6 @@ public class Runner extends Fetcher {
 		boolean is64 = false;
 		if (osArch.contains("64")) {
 			is64 = true;
-			System.out.println("x86_64 detected");
 		}
 		if (osName.contains("win")) {
 			if (is64) {
@@ -98,34 +98,44 @@ public class Runner extends Fetcher {
 			} else {
 				rexuizExe += AppConstants.runExeWin32;
 			}
-			System.out.println("windows detected");
 		} else if (osName.contains("linux")) {
 			if (is64) {
 				rexuizExe += AppConstants.runExeLinux64;
 			} else {
 				rexuizExe += AppConstants.runExeLinux32;
 			}
-			System.out.println("linux detected");
 			(new File(rexuizExe)).setExecutable(true, false);
 		}
 
 
 		String[] cmd = { rexuizExe };
-		System.out.println("rexuizExe=" + rexuizExe);
 		try {
-			Process p = Runtime.getRuntime().exec(cmd);
+			Process p = new ProcessBuilder(rexuizExe).directory(new File(rexuizHomeDir)).start();
 			p.waitFor();
 		} catch (Exception ex) {
+			throw new RunnerException("Execute failed:\n" + rexuizExe + "\n" + ex.getMessage());
 		}
 	}
 	public void run() {
-		showMainDialog();
-		checkUpdate();
-		if (wasInstalled) {
-			if (this.ask("Rexuiz installed. Do you want run it?"))
+		this.showMainDialog();
+		try {
+			checkUpdate();
+			if (wasInstalled) {
+				if (this.ask("Rexuiz installed. Do you want run it?"))
+					runRexuiz();
+			} else if (!notInstalled) {
 				runRexuiz();
-		} else if (!notInstalled) {
-			runRexuiz();
+			}
+		} catch (FetcherException ex) {
+			message(ex.getMessage());
+		} catch (RunnerException ex) {
+			message(ex.getMessage());
+		} catch (FileList.FileListException ex) {
+			message(ex.getMessage());
+		} catch (FileListItem.FileListItemException ex) {
+			message(ex.getMessage());
+		} catch (Exception ex) {
+			message("Error:\n" + ex.getMessage());
 		}
 		System.exit(0);
 	}
