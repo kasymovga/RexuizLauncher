@@ -4,7 +4,10 @@ import java.util.*;
 import java.io.*;
 
 public class FileList extends HashMap<String, FileListItem> {
-	public FileList(String path) {
+	public class FileListException  extends Exception {
+		FileListException(String message) { super(message); }
+	}
+	public FileList(String path) throws FileListException {
 		BufferedReader br = null;
 		FileInputStream in = null;
 		long size;
@@ -21,6 +24,7 @@ public class FileList extends HashMap<String, FileListItem> {
 			}
 		} catch (FileNotFoundException ex) {
 		} catch (Exception ex) {
+			throw new FileListException(path + ":\n" + ex.getMessage());
 		} finally {
 			if (br != null) {
 				try {
@@ -34,6 +38,5 @@ public class FileList extends HashMap<String, FileListItem> {
 				}
 			}
 		}
-
 	}
 }

@@ -21,8 +21,11 @@ public class Fetcher extends GraphicalUserInterface {
 		totalSize = newTotalSize;
 	}
 
-	public boolean download(String source, String destination, String hash, long size) {
-		boolean success = true;
+	public class FetcherException extends Exception {
+		public FetcherException(String message) { super(message); }
+	}
+
+	public boolean download(String source, String destination, String hash, long size) throws FetcherException, FileListItem.FileListItemException {
 		BufferedInputStream in = null;
 		FileOutputStream fout = null;
 		if (hash.length() > 0 && FileListItem.checkFile(destination, hash, size)) {
@@ -45,8 +48,7 @@ public class Fetcher extends GraphicalUserInterface {
 					this.progress((double)downloaded / (double)totalSize);
 			}
 		} catch (Exception ex) {
-			message("Downloading failed :\n" + source + " -> " + destination + "\n" + ex.getMessage());
-			success = false;
+			throw new Fetcher.FetcherException("Downloading failed :\n" + source + " -> " + destination + "\n" + ex.getMessage());
 		} finally {
 			if (in != null) {
 				try {

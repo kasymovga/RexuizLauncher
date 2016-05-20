@@ -4,12 +4,14 @@ import java.security.*;
 import javax.xml.bind.*;
 
 public class FileListItem {
+	static public class FileListItemException  extends Exception {
+		FileListItemException(String message) { super(message); }
+	}
 	final public String hash;
 	final public long size;
 	private static final int BLOCK_SIZE = 1024;
 
-	static public boolean checkFile(String path, String hash, long size)
-	{
+	static public boolean checkFile(String path, String hash, long size) throws FileListItemException {
 		if (size != (new File(path)).length()) {
 			return false;
 		}
@@ -24,7 +26,7 @@ public class FileListItem {
 				md.update(data, 0, count);
 			}
 		} catch (Exception ex) {
-			return false;
+			throw new FileListItemException(path + ":\n" + ex.getMessage());
 		} finally {
 			if (fin != null) {
 				try {
@@ -41,8 +43,7 @@ public class FileListItem {
 		return false;
 	}
 
-	public FileListItem(String hash, long size)
-	{
+	public FileListItem(String hash, long size) {
 		this.hash = hash;
 		this.size = size;
 	}
