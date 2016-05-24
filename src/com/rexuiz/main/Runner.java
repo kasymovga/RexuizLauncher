@@ -76,10 +76,8 @@ public class Runner extends Fetcher {
 			notInstalled = false;
 			(new File(oldList)).delete();
 			(new File(updateList)).renameTo(new File(oldList));
-			if (notInstalled) {
-				wasInstalled = true;
-				notInstalled = false;
-			}
+			wasInstalled = true;
+			notInstalled = false;
 		}
 	}
 	void runRexuiz() throws RunnerException {
