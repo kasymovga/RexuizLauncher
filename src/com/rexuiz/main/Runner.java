@@ -10,15 +10,15 @@ public class Runner extends Fetcher {
 	public class RunnerException extends Exception {
 		public RunnerException(String message) { super(message); }
 	}
-	String rexuizHomeDir;
-	boolean notInstalled;
-	boolean wasInstalled;
+	private String rexuizHomeDir;
+	private boolean notInstalled;
+	private boolean wasInstalled;
 	public Runner() {
 		notInstalled = false;
 		wasInstalled = false;
 		rexuizHomeDir = System.getProperty("user.home") + File.separator + AppConstants.homeDir;
 	}
-	public void checkUpdate() throws RunnerException, FetcherException, FileList.FileListException, FileListItem.FileListItemException {
+	private void checkUpdate() throws RunnerException, FetcherException, FileList.FileListException, FileListItem.FileListItemException {
 		this.status("Check for updates");
 		String oldList = rexuizHomeDir + File.separator + "index.lst";
 		FileList oldFileList = new FileList(oldList);
@@ -80,7 +80,7 @@ public class Runner extends Fetcher {
 			notInstalled = false;
 		}
 	}
-	void runRexuiz() throws RunnerException {
+	private void runRexuiz() throws RunnerException {
 		this.status("Running");
 		String rexuizExe = rexuizHomeDir + File.separator;
 		String osName = System.getProperty("os.name").toLowerCase();
