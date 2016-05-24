@@ -23,8 +23,7 @@ public class Runner extends Fetcher {
 		String oldList = rexuizHomeDir + File.separator + "index.lst";
 		FileList oldFileList = new FileList(oldList);
 		Iterator<Map.Entry<String, FileListItem>> iterator;
-		iterator = oldFileList.entrySet().iterator();
-		if (!iterator.hasNext())
+		if (oldFileList.isEmpty())
 			notInstalled = true;
 		String syncURL = "";
 		String updateList = rexuizHomeDir + File.separator + "index.lst.update";
@@ -53,8 +52,8 @@ public class Runner extends Fetcher {
 			}
 		}
 
-		iterator = newFileList.entrySet().iterator();
-		if (iterator.hasNext() && ask(notInstalled ? "Install Rexuiz now?" : "Update available. Do you want install it?")) {
+		if (!newFileList.isEmpty() && ask(notInstalled ? "Install Rexuiz now?" : "Update available. Do you want install it?")) {
+			iterator = newFileList.entrySet().iterator();
 			long totalSize = 0;
 			String filePath;
 			while (iterator.hasNext()) {
