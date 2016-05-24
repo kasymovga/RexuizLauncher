@@ -18,6 +18,30 @@ public class Runner extends Fetcher {
 		wasInstalled = false;
 		rexuizHomeDir = System.getProperty("user.home") + File.separator + AppConstants.homeDir;
 	}
+	private void update(String syncURL, FileList newFileList) throws RunnerException, FetcherException, FileListItem.FileListItemException {
+		Iterator<Map.Entry<String, FileListItem>> iterator;
+		Map.Entry<String, FileListItem> mentry;
+		String filePath;
+		iterator = newFileList.entrySet().iterator();
+		long totalSize = 0;
+		FileListItem itemNew;
+		while (iterator.hasNext()) {
+			mentry = iterator.next();
+			itemNew = mentry.getValue();
+			totalSize += itemNew.size;
+		}
+		iterator = newFileList.entrySet().iterator();
+		this.setDownloadSize(totalSize);
+		this.status("Downloading game data");
+		while (iterator.hasNext()) {
+			mentry = iterator.next();
+			filePath = (rexuizHomeDir + File.separator + mentry.getKey()).replace("/", File.separator);
+			if (!download(syncURL + mentry.getKey(),
+					filePath, mentry.getValue().hash, mentry.getValue().size)) {
+				throw new RunnerException(filePath + ": file check failed");
+			}
+		}
+	}
 	private void checkUpdate() throws RunnerException, FetcherException, FileList.FileListException, FileListItem.FileListItemException {
 		this.status("Check for updates");
 		String oldList = rexuizHomeDir + File.separator + "index.lst";
@@ -53,27 +77,8 @@ public class Runner extends Fetcher {
 		}
 
 		if (!newFileList.isEmpty() && ask(notInstalled ? "Install Rexuiz now?" : "Update available. Do you want install it?")) {
-			iterator = newFileList.entrySet().iterator();
-			long totalSize = 0;
-			String filePath;
-			while (iterator.hasNext()) {
-				mentry = iterator.next();
-				itemNew = mentry.getValue();
-				totalSize += itemNew.size;
-			}
-			iterator = newFileList.entrySet().iterator();
-			this.setDownloadSize(totalSize);
-			this.status("Downloading game data");
 			notInstalled = true;
-			while (iterator.hasNext()) {
-				mentry = iterator.next();
-				filePath = (rexuizHomeDir + File.separator + mentry.getKey()).replace("/", File.separator);
-				if (!download(syncURL + mentry.getKey(),
-						filePath, mentry.getValue().hash, mentry.getValue().size)) {
-					throw new RunnerException(filePath + ": file check failed");
-				}
-			}
-			notInstalled = false;
+			update(syncURL, newFileList);
 			(new File(oldList)).delete();
 			(new File(updateList)).renameTo(new File(oldList));
 			wasInstalled = true;
