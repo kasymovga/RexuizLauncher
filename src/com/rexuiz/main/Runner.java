@@ -46,7 +46,6 @@ public class Runner extends Fetcher {
 		this.status("Check for updates");
 		String oldList = rexuizHomeDir + File.separator + "index.lst";
 		FileList oldFileList = new FileList(oldList);
-		Iterator<Map.Entry<String, FileListItem>> iterator;
 		if (oldFileList.isEmpty())
 			notInstalled = true;
 		String syncURL = "";
@@ -63,19 +62,8 @@ public class Runner extends Fetcher {
 		if (i == AppConstants.syncURLs.length && notInstalled)
 			return;
 
-		FileListItem itemOld, itemNew;
-		Map.Entry<String, FileListItem> mentry;
 		FileList newFileList = new FileList(updateList);
-		iterator = oldFileList.entrySet().iterator();
-		while (iterator.hasNext()) {
-			mentry = iterator.next();
-			itemOld = mentry.getValue();
-			itemNew = newFileList.get(mentry.getKey());
-			if (itemNew != null && itemNew.hash.equals(itemOld.hash)) {
-				newFileList.remove(mentry.getKey());
-			}
-		}
-
+		newFileList.keySet().removeAll(oldFileList.keySet());
 		if (!newFileList.isEmpty() && ask(notInstalled ? "Install Rexuiz now?" : "Update available. Do you want install it?")) {
 			notInstalled = true;
 			update(syncURL, newFileList);
