@@ -18,13 +18,12 @@ public class Runner extends Fetcher {
 		wasInstalled = false;
 		rexuizHomeDir = System.getProperty("user.home") + File.separator + AppConstants.homeDir;
 	}
-	public void checkUpdate() throws Exception, FetcherException, FileList.FileListException, FileListItem.FileListItemException {
+	public void checkUpdate() throws RunnerException, FetcherException, FileList.FileListException, FileListItem.FileListItemException {
 		this.status("Check for updates");
 		String oldList = rexuizHomeDir + File.separator + "index.lst";
 		FileList oldFileList = new FileList(oldList);
 		Iterator<Map.Entry<String, FileListItem>> iterator;
-		iterator = oldFileList.entrySet().iterator();
-		if (!iterator.hasNext())
+		if (oldFileList.isEmpty())
 			notInstalled = true;
 		String syncURL = "";
 		String updateList = rexuizHomeDir + File.separator + "index.lst.update";
@@ -53,8 +52,8 @@ public class Runner extends Fetcher {
 			}
 		}
 
-		iterator = newFileList.entrySet().iterator();
-		if (iterator.hasNext() && ask(notInstalled ? "Install Rexuiz now?" : "Update available. Do you want install it?")) {
+		if (!newFileList.isEmpty() && ask(notInstalled ? "Install Rexuiz now?" : "Update available. Do you want install it?")) {
+			iterator = newFileList.entrySet().iterator();
 			long totalSize = 0;
 			String filePath;
 			while (iterator.hasNext()) {
@@ -77,10 +76,8 @@ public class Runner extends Fetcher {
 			notInstalled = false;
 			(new File(oldList)).delete();
 			(new File(updateList)).renameTo(new File(oldList));
-			if (notInstalled) {
-				wasInstalled = true;
-				notInstalled = false;
-			}
+			wasInstalled = true;
+			notInstalled = false;
 		}
 	}
 	void runRexuiz() throws RunnerException {
