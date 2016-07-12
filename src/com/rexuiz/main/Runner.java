@@ -60,7 +60,7 @@ public class Runner extends Fetcher {
 			} catch (Exception ex) {
 			}
 		}
-		if (i == AppConstants.syncURLs.length && notInstalled)
+		if (i == AppConstants.syncURLs.length)
 			return;
 
 		FileListItem itemOld, itemNew;
@@ -70,6 +70,11 @@ public class Runner extends Fetcher {
 		while (iterator.hasNext()) {
 			mentry = iterator.next();
 			itemOld = mentry.getValue();
+
+			//Force update broken files
+			if (!FileListItem.checkFile((rexuizHomeDir + File.separator + mentry.getKey()).replace("/", File.separator), "", itemOld.size))
+				continue;
+
 			itemNew = newFileList.get(mentry.getKey());
 			if (itemNew != null && itemNew.hash.equals(itemOld.hash)) {
 				newFileList.remove(mentry.getKey());

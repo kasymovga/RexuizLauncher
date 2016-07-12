@@ -15,6 +15,9 @@ public class FileListItem {
 		if (size != (new File(path)).length()) {
 			return false;
 		}
+		if (hash.equals(""))
+			return true;
+
 		FileInputStream fin = null;
 		MessageDigest md = null;
 		try {
