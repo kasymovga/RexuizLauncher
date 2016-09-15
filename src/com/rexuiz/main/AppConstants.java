@@ -2,7 +2,8 @@ package com.rexuiz.main;
 
 public class AppConstants {
 	public static String[] syncURLs = {
-			"http://108.61.164.188/RexuizLauncher/"
+			"http://108.61.164.188/RexuizLauncher/",
+			"http://104.238.159.167/RexuizLauncher/"
 	};
 	public final static String runExeWin32 = "rexuiz-sdl-i686.exe";
 	public final static String runExeWin64 = "rexuiz-sdl-x86_64.exe";

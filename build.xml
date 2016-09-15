@@ -12,6 +12,7 @@
             <manifest>
                 <attribute name="Main-Class" value="com.rexuiz.main.Main"/>
             </manifest>
+			 <fileset dir="src/resources"/>
         </jar>
     </target>
     <target name="run" depends="jar">

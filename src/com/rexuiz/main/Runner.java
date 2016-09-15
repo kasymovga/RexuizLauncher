@@ -13,10 +13,51 @@ public class Runner extends Fetcher {
 	private String rexuizHomeDir;
 	private boolean notInstalled;
 	private boolean wasInstalled;
+	String[] syncURLs;
 	public Runner() {
 		notInstalled = false;
 		wasInstalled = false;
 		rexuizHomeDir = System.getProperty("user.home") + File.separator + AppConstants.homeDir;
+		Properties properties = new Properties();
+		InputStream input = null;
+		try {
+			input = Thread.currentThread().getContextClassLoader().getResourceAsStream("launcher.properties");
+			if (input != null) {
+				properties.load(input);
+			}
+		} catch (IOException e) {
+			//ignore
+		} finally {
+			if (input != null)
+				try {
+					input.close();
+				} catch (Exception ex) {
+					//ignore
+				}
+		}
+		if (properties.getProperty("launcher.mode", "").equals("updater")) {
+			try {
+				rexuizHomeDir = (new File(Runner.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath())).getParentFile().getPath();
+			} catch (Exception ex) {
+				//???
+			}
+		}
+
+		int i, n;
+		for (i = 0; i < 100; i++) {
+			if (properties.getProperty("launcher.url" + Integer.toString(i), "") == "")
+				break;
+		}
+		if (i == 0) {
+			syncURLs = AppConstants.syncURLs;
+		} else {
+			n = i;
+			syncURLs = new String[n];
+			for (i = 0; i < n; i++) {
+				syncURLs[i] = properties.getProperty("launcher.url" + Integer.toString(i));
+			}
+		}
+
 	}
 	private void update(String syncURL, FileList newFileList) throws RunnerException, FetcherException, FileListItem.FileListItemException {
 		Iterator<Map.Entry<String, FileListItem>> iterator;
@@ -52,15 +93,15 @@ public class Runner extends Fetcher {
 		String syncURL = "";
 		String updateList = rexuizHomeDir + File.separator + "index.lst.update";
 		int i;
-		for (i = 0; i < AppConstants.syncURLs.length; i++) {
+		for (i = 0; i < syncURLs.length; i++) {
 			try {
-				download(AppConstants.syncURLs[i] + "index.lst", updateList, "", 0);
-				syncURL = AppConstants.syncURLs[i];
+				download(syncURLs[i] + "index.lst", updateList, "", 0);
+				syncURL = syncURLs[i];
 				break;
 			} catch (Exception ex) {
 			}
 		}
-		if (i == AppConstants.syncURLs.length)
+		if (i == syncURLs.length)
 			return;
 
 		FileListItem itemOld, itemNew;
