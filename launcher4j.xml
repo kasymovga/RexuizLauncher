@@ -23,4 +23,8 @@
     <jdkPreference>preferJre</jdkPreference>
     <runtimeBits>64/32</runtimeBits>
   </jre>
+  <singleInstance>
+    <mutexName>RexuizLauncher</mutexName>
+    <windowTitle>Rexuiz Launcher</windowTitle>
+  </singleInstance>
 </launch4jConfig>
