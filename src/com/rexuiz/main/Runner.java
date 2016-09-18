@@ -131,6 +131,16 @@ public class Runner extends Fetcher {
 			notInstalled = false;
 		}
 	}
+	private static void inheritIO(final InputStream src, final PrintStream dest) {
+		new Thread(new Runnable() {
+			public void run() {
+				Scanner sc = new Scanner(src);
+				while (sc.hasNextLine()) {
+					dest.println(sc.nextLine());
+				}
+			}
+		}).start();
+	}
 	private void runRexuiz() throws RunnerException {
 		this.status("Running");
 		String rexuizExe = rexuizHomeDir + File.separator;
@@ -159,6 +169,8 @@ public class Runner extends Fetcher {
 		String[] cmd = { rexuizExe };
 		try {
 			Process p = new ProcessBuilder(rexuizExe).directory(new File(rexuizHomeDir)).start();
+			inheritIO(p.getInputStream(), System.out);
+			inheritIO(p.getErrorStream(), System.err);
 			p.waitFor();
 		} catch (Exception ex) {
 			throw new RunnerException("Execute failed:\n" + rexuizExe + "\n" + ex.getMessage());
