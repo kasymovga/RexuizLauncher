@@ -156,6 +156,9 @@ public class Runner extends Fetcher {
 			} else {
 				rexuizExe += AppConstants.runExeWin32;
 			}
+		} else if (osName.contains("mac")) {
+			rexuizExe += AppConstants.runExeMac;
+			(new File(rexuizExe)).setExecutable(true, false);
 		} else if (osName.contains("linux")) {
 			if (is64) {
 				rexuizExe += AppConstants.runExeLinux64;
