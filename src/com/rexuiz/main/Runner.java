@@ -73,17 +73,35 @@ public class Runner extends Fetcher {
 		}
 		iterator = newFileList.entrySet().iterator();
 		this.setDownloadSize(totalSize);
-		this.status("Downloading game data");
+		this.status("Installing");
+		String zipSource;
+		FileListItem item;
 		while (iterator.hasNext()) {
 			mentry = iterator.next();
 			filePath = (rexuizHomeDir + File.separator + mentry.getKey()).replace("/", File.separator);
-			if (!download(syncURL + mentry.getKey(),
-					filePath, mentry.getValue().hash, mentry.getValue().size)) {
+			item = mentry.getValue();
+			boolean needDownload = true;;
+			if (!item.zipSource.equals("")) {
+				try {
+					needDownload = !downloadAndExtract(item.zipSource,
+					                   filePath,
+					                   item.hash,
+					                   item.size,
+					                   rexuizHomeDir + File.separator + item.zipSourceName,
+					                   item.zipFilePath,
+					                   item.zipHash,
+					                   item.zipSize);
+				} catch (Exception e) {
+					//ignore and try another download usual way
+				}
+			}
+			if (needDownload && !download(syncURL + mentry.getKey(),
+					filePath, item.hash, item.size)) {
 				throw new RunnerException(filePath + ": file check failed");
 			}
 		}
 	}
-	private void checkUpdate() throws RunnerException, FetcherException, FileList.FileListException, FileListItem.FileListItemException {
+	private void prepareToRun() throws RunnerException, FetcherException, FileList.FileListException, FileListItem.FileListItemException {
 		this.status("Check for updates");
 		String oldList = rexuizHomeDir + File.separator + "index.lst";
 		FileList oldFileList = new FileList(oldList);
@@ -182,7 +200,7 @@ public class Runner extends Fetcher {
 	public void run() {
 		this.showMainDialog();
 		try {
-			checkUpdate();
+			prepareToRun();
 			if (wasInstalled) {
 				if (this.ask("Rexuiz installed. Do you want run it?"))
 					runRexuiz();

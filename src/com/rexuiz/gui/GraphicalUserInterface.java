@@ -9,15 +9,17 @@ import java.io.*;
 public class GraphicalUserInterface extends JFrame {
 	private JLabel statusLabel;
 	private JProgressBar progressBar;
+	private JProgressBar subProgressBar;
 	private String statusSafeMessage;
-	private double progressSafeValue;
 
 	public GraphicalUserInterface() {
 		setTitle("Rexuiz Launcher");
 		statusLabel = new JLabel("Preparing to launch...", SwingConstants.CENTER);
 		progressBar = new JProgressBar(0, 100);
 		progressBar.setStringPainted(true);
-		setLayout(new GridLayout(3, 1));
+		subProgressBar = new JProgressBar(0, 100);
+		subProgressBar.setStringPainted(true);
+		setLayout(new GridLayout(4, 1));
 		InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream("icon.png");
 		if (input !=  null) {
 			try {
@@ -40,6 +42,7 @@ public class GraphicalUserInterface extends JFrame {
 		}
 		getContentPane().add(statusLabel);
 		getContentPane().add(progressBar);
+		getContentPane().add(subProgressBar);
 		pack();
 		setSize(320, 120);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,16 +67,28 @@ public class GraphicalUserInterface extends JFrame {
 		}
 	}
 
-	private final Runnable progressSafe = new Runnable() {
-		public void run() {
-			progressBar.setValue((int)(progressSafeValue * 100));
-			progressBar.setString(String.format("%3.1f%%", progressSafeValue * 100));
-		}
-	};
 	public void progress(double f) {
-		progressSafeValue = f;
 		try {
-			SwingUtilities.invokeAndWait(progressSafe);
+			SwingUtilities.invokeAndWait(new Runnable() {
+				final private double progress = f;
+				public void run() {
+					progressBar.setValue((int)(progress * 100));
+					progressBar.setString(String.format("%3.1f%%", progress * 100));
+				}
+			});
+		} catch (Exception ex) {
+		}
+	}
+	public void subProgress(double f, String subStatus) {
+		try {
+			SwingUtilities.invokeAndWait(new Runnable() {
+				final private double progress = f;
+				final private String status = subStatus;
+				public void run() {
+					subProgressBar.setValue((int)(progress * 100));
+					subProgressBar.setString(status);
+				}
+			});
 		} catch (Exception ex) {
 		}
 	}

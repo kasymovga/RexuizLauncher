@@ -9,5 +9,6 @@ public class AppConstants {
 	public final static String runExeWin64 = "rexuiz-sdl-x86_64.exe";
 	public final static String runExeLinux32 = "rexuiz-linux-sdl-i686";
 	public final static String runExeLinux64 = "rexuiz-linux-sdl-x86_64";
+	public final static String runExeMac = "Rexuiz.app/Content/MacOS/rexuiz-dprm-sdl";
 	public final static String homeDir = "RexuizBase";
 }

@@ -7,10 +7,15 @@ import java.io.*;
 import java.net.*;
 import java.lang.Exception;
 
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.HashSet;
+
 public class Fetcher extends GraphicalUserInterface {
 	private long totalSize;
 	private long downloaded;
-	private final int BLOCK_SIZE = 1024;
+	private final int BLOCK_SIZE = 10240;
+	private HashSet<String> zipFiles = new HashSet<String>();
 
 	public Fetcher() {
 		this.setDownloadSize(0);
@@ -26,15 +31,21 @@ public class Fetcher extends GraphicalUserInterface {
 	}
 
 	public boolean download(String source, String destination, String hash, long size) throws FetcherException, FileListItem.FileListItemException {
+		return download(source, destination, hash, size, size);
+	}
+
+	public boolean download(String source, String destination, String hash, long size, long targetSize) throws FetcherException, FileListItem.FileListItemException {
 		BufferedInputStream in = null;
 		FileOutputStream fout = null;
 		if (hash.length() > 0 && FileListItem.checkFile(destination, hash, size)) {
 			downloaded += size;
-			if (totalSize != 0)
+			if (totalSize > 0)
 				this.progress((double)downloaded / (double)totalSize);
+
 			return true;
 		}
 		try {
+			long downloadedPart = 0;
 			(new File(destination)).getParentFile().mkdirs();
 			in = new BufferedInputStream(new URL(source).openStream());
 			fout = new FileOutputStream(destination);
@@ -42,11 +53,19 @@ public class Fetcher extends GraphicalUserInterface {
 			final byte data[] = new byte[BLOCK_SIZE];
 			int count;
 			while ((count = in.read(data, 0, BLOCK_SIZE)) > 0) {
-				downloaded += count;
 				fout.write(data, 0, count);
-				if (totalSize != 0)
-					this.progress((double)downloaded / (double)totalSize);
+				if (size > 0) {
+					downloadedPart += count;
+					this.subProgress((double)downloadedPart / size, "Downloading");
+					this.progress((double)(downloaded + targetSize * ((double)downloadedPart / size)) / totalSize);
+				}
 			}
+			if (hash.length() > 0) {
+				if (!FileListItem.checkFile(destination, hash, size))
+					return false;
+			}
+			if (totalSize > 0)
+				downloaded += targetSize;
 		} catch (Exception ex) {
 			throw new Fetcher.FetcherException("Downloading failed :\n" + source + " -> " + destination + "\n" + ex.getMessage());
 		} finally {
@@ -63,6 +82,69 @@ public class Fetcher extends GraphicalUserInterface {
 				}
 			}
 		}
+		return true;
+	}
+	public boolean extract(String source, String subsource, String destination, String hash, long size) throws FetcherException, FileListItem.FileListItemException {
+		OutputStream out = null;
+		FileInputStream fin = null;
+		BufferedInputStream bin = null;
+		ZipInputStream zin = null;
+		try {
+			out = new FileOutputStream(destination);
+			fin = new FileInputStream(source);
+			bin = new BufferedInputStream(fin);
+			zin = new ZipInputStream(bin);
+			ZipEntry ze = null;
+			long extracted = 0;
+			while ((ze = zin.getNextEntry()) != null)
+				if (ze.getName().equals(subsource)) {
+					byte[] buffer = new byte[BLOCK_SIZE];
+					int len;
+					while ((len = zin.read(buffer)) != -1) {
+						out.write(buffer, 0, len);
+						if (size > 0) {
+							extracted += len;
+							subProgress((double)(extracted) / size, "Extracting");
+						}
+					}
+					break;
+				}
+		} catch (Exception ex) {
+			throw new Fetcher.FetcherException("Unpacking failed :\n" + source + " -> " + destination + "\n" + ex.getMessage());
+		} finally {
+			try {
+				if (out != null)
+					out.close();
+
+				if (zin != null)
+					zin.close();
+			} catch (Exception e) {
+			}
+		}
 		return (hash.length() > 0 ? FileListItem.checkFile(destination, hash, size) : true);
+	}
+	public boolean downloadAndExtract(
+			String source,
+			String destination,
+			String hash,
+			long size,
+			String zipDestination,
+			String zipFilePath,
+			String zipHash,
+			long zipSize
+	) throws FetcherException, FileListItem.FileListItemException {
+		if (zipFiles.contains(zipDestination)) {
+			if (totalSize > 0)
+				downloaded += size;
+		} else if(!download(source, zipDestination, zipHash, zipSize, size))
+			return false;
+
+		zipFiles.add(zipDestination);
+		if (extract(zipDestination, zipFilePath, destination, hash, size))
+			return true;
+
+		if (totalSize > 0)
+			downloaded -= size; //Extracting failed
+		return false;
 	}
 }
