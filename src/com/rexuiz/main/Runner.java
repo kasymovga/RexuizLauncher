@@ -66,6 +66,8 @@ public class Runner extends Fetcher {
 		iterator = newFileList.entrySet().iterator();
 		long totalSize = 0;
 		FileListItem itemNew;
+		this.setConnectTimeout(10000);
+		this.setReadTimeout(10000);
 		while (iterator.hasNext()) {
 			mentry = iterator.next();
 			itemNew = mentry.getValue();
@@ -110,6 +112,8 @@ public class Runner extends Fetcher {
 			notInstalled = true;
 		String syncURL = "";
 		String updateList = rexuizHomeDir + File.separator + "index.lst.update";
+		this.setConnectTimeout(1000); //Avoid long waiting
+		this.setReadTimeout(1000);
 		int i;
 		for (i = 0; i < syncURLs.length; i++) {
 			try {

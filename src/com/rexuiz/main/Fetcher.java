@@ -16,6 +16,16 @@ public class Fetcher extends GraphicalUserInterface {
 	private long downloaded;
 	private final int BLOCK_SIZE = 10240;
 	private HashSet<String> zipFiles = new HashSet<String>();
+	private int connectTimeout = 3000;
+	private int readTimeout = 3000;
+
+	public void setConnectTimeout(int timeout) {
+		this.connectTimeout = timeout;
+	}
+
+	public void setReadTimeout(int timeout) {
+		this.readTimeout = timeout;
+	}
 
 	public Fetcher() {
 		this.setDownloadSize(0);
@@ -47,7 +57,11 @@ public class Fetcher extends GraphicalUserInterface {
 		try {
 			long downloadedPart = 0;
 			(new File(destination)).getParentFile().mkdirs();
-			in = new BufferedInputStream(new URL(source).openStream());
+			URL url = new URL(source);
+			URLConnection con = url.openConnection();
+			con.setConnectTimeout(connectTimeout);
+			con.setReadTimeout(readTimeout);
+			in = new BufferedInputStream(con.getInputStream());
 			fout = new FileOutputStream(destination);
 
 			final byte data[] = new byte[BLOCK_SIZE];
