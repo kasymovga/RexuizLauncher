@@ -147,6 +147,7 @@ public class Runner extends Fetcher {
 		if (!newFileList.isEmpty() && ask(notInstalled ? "Install Rexuiz now?" : "Update available. Do you want install it?")) {
 			notInstalled = true;
 			update(syncURL, newFileList);
+			clear();
 			(new File(oldList)).delete();
 			(new File(updateList)).renameTo(new File(oldList));
 			wasInstalled = true;

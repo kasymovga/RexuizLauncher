@@ -10,6 +10,7 @@ import java.lang.Exception;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.HashSet;
+import java.util.Iterator;
 
 public class Fetcher extends GraphicalUserInterface {
 	private long totalSize;
@@ -160,5 +161,13 @@ public class Fetcher extends GraphicalUserInterface {
 		if (totalSize > 0)
 			downloaded -= size; //Extracting failed
 		return false;
+	}
+	public void clear() {
+		String filePath = null;
+		for (Iterator<String> iter = zipFiles.iterator(); iter.hasNext(); ) {
+			filePath = iter.next();
+			(new File(filePath)).delete();
+		}
+		zipFiles.clear();
 	}
 }
