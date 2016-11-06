@@ -49,7 +49,7 @@ public class Fetcher extends GraphicalUserInterface {
 		BufferedInputStream in = null;
 		FileOutputStream fout = null;
 		if (hash.length() > 0 && FileListItem.checkFile(destination, hash, size)) {
-			downloaded += size;
+			downloaded += targetSize;
 			if (totalSize > 0)
 				this.progress((double)downloaded / (double)totalSize);
 
@@ -151,15 +151,28 @@ public class Fetcher extends GraphicalUserInterface {
 		if (zipFiles.contains(zipDestination)) {
 			if (totalSize > 0)
 				downloaded += size;
-		} else if(!download(source, zipDestination, zipHash, zipSize, size))
-			return false;
+		} else {
+			if(!download(source, zipDestination, zipHash, zipSize, size))
+				return false;
 
-		zipFiles.add(zipDestination);
-		if (extract(zipDestination, zipFilePath, destination, hash, size))
-			return true;
+			zipFiles.add(zipDestination);
+		}
+		try {
+			if (extract(zipDestination, zipFilePath, destination, hash, size))
+				return true;
 
-		if (totalSize > 0)
-			downloaded -= size; //Extracting failed
+		} catch (FetcherException ex) {
+			if (totalSize > 0)
+				downloaded -= size; //Extracting failed
+
+			throw ex;
+		} catch (FileListItem.FileListItemException ex) { //Forgive me for this code duplication
+			if (totalSize > 0)
+				downloaded -= size; //Extracting failed
+
+			throw ex;
+		}
+
 		return false;
 	}
 	public void clear() {
