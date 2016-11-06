@@ -11,6 +11,7 @@ public class GraphicalUserInterface extends JFrame {
 	private JProgressBar progressBar;
 	private JProgressBar subProgressBar;
 	private String statusSafeMessage;
+	private BufferedImage icon = null;
 
 	public GraphicalUserInterface() {
 		setTitle("Rexuiz Launcher");
@@ -23,7 +24,7 @@ public class GraphicalUserInterface extends JFrame {
 		InputStream input = Thread.currentThread().getContextClassLoader().getResourceAsStream("icon.png");
 		if (input !=  null) {
 			try {
-				BufferedImage icon = ImageIO.read(input);
+				icon = ImageIO.read(input);
 				if (icon !=  null)
 					setIconImage(icon);
 			} catch (Exception ex) {
@@ -94,6 +95,7 @@ public class GraphicalUserInterface extends JFrame {
 	}
 	public boolean ask(String question) {
 		JFrame frame = new JFrame();
+		frame.setIconImage(icon);
 		int answer = JOptionPane.showConfirmDialog(frame, question, "", JOptionPane.YES_NO_OPTION);
 		if (answer == JOptionPane.YES_OPTION) {
 			return true;

@@ -222,6 +222,7 @@ public class Runner extends Fetcher {
 			message(ex.getMessage());
 		} catch (Exception ex) {
 			message("Error:\n" + ex.getMessage());
+			ex.printStackTrace(System.out);
 		}
 		System.exit(0);
 	}
