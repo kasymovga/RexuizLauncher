@@ -67,7 +67,7 @@ public class GraphicalUserInterface extends JFrame {
 		}
 	}
 
-	public void progress(double f) {
+	public void progress(final double f) {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				final private double progress = f;
@@ -79,7 +79,7 @@ public class GraphicalUserInterface extends JFrame {
 		} catch (Exception ex) {
 		}
 	}
-	public void subProgress(double f, String subStatus) {
+	public void subProgress(final double f, final String subStatus) {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				final private double progress = f;
