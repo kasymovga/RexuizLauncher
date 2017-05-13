@@ -105,4 +105,28 @@ public class GraphicalUserInterface extends JFrame {
 	public void message(String msg) {
 		JOptionPane.showMessageDialog(this, msg);
 	}
+	public String askDestinationFolder(String dest) {
+		JFrame frame = new JFrame();
+		frame.setIconImage(icon);
+		String[] options = new String[2];
+		options[0] = new String("Use this folder");
+		options[1] = new String("Another location");
+		int answer;
+		for (;;) {
+			answer = JOptionPane.showOptionDialog(frame.getContentPane(), "Location for Rexuiz install: " + dest, "Confirm install location", 0, JOptionPane.INFORMATION_MESSAGE, null, options, null);
+			if (answer == JOptionPane.CLOSED_OPTION)
+				return "";
+
+			if (answer == JOptionPane.YES_NO_OPTION)
+				return dest;
+
+			JFileChooser chooser = new JFileChooser();
+			chooser.setCurrentDirectory(new java.io.File(dest));
+			chooser.setDialogTitle("Select destination location");
+			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			chooser.setAcceptAllFileFilterUsed(false);
+			if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
+				dest = "" + chooser.getSelectedFile();
+		}
+	}
 }

@@ -2,6 +2,8 @@ package com.rexuiz.main;
 
 public class AppConstants {
 	public static String[] syncURLs = {
+			"http://bnse.rexuiz.top/RexuizLauncher/",
+			"http://nexuiz.mooo.com/RexuizLauncher/",
 			"http://108.61.164.188/RexuizLauncher/",
 			"http://104.238.159.167/RexuizLauncher/"
 	};
@@ -11,4 +13,5 @@ public class AppConstants {
 	public final static String runExeLinux64 = "rexuiz-linux-sdl-x86_64";
 	public final static String runExeMac = "Rexuiz.app/Content/MacOS/rexuiz-dprm-sdl";
 	public final static String homeDir = "RexuizBase";
+	public final static String cfgName = "rexuiz.properties";
 }

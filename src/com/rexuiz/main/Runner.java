@@ -11,12 +11,33 @@ public class Runner extends Fetcher {
 		public RunnerException(String message) { super(message); }
 	}
 	private String rexuizHomeDir;
+	private String rexuizLauncherCfg;
 	private boolean notInstalled;
 	private boolean wasInstalled;
+	private boolean isWin, isMac, isLinux, is64;
+	private Properties localProperties;
 	String[] syncURLs;
 	public Runner() {
+		String osName = System.getProperty("os.name").toLowerCase();
+		String osArch = System.getProperty("os.arch").toLowerCase();
 		notInstalled = false;
 		wasInstalled = false;
+		isWin = false;
+		isMac = false;
+		rexuizLauncherCfg = "";
+		localProperties = new Properties();
+		if (osArch.contains("64"))
+			is64 = true;
+		else
+			is64 = false;
+
+		if (osName.contains("win"))
+			isWin = true;
+		else if (osName.contains("mac"))
+			isMac = true;
+		else
+			isLinux = true;
+
 		rexuizHomeDir = System.getProperty("user.home") + File.separator + AppConstants.homeDir;
 		Properties properties = new Properties();
 		InputStream input = null;
@@ -41,8 +62,25 @@ public class Runner extends Fetcher {
 			} catch (Exception ex) {
 				//???
 			}
+		} else {
+			rexuizLauncherCfg = System.getProperty("user.home") + File.separator + ((isLinux || isMac) ? "." : "") + AppConstants.cfgName;
+			input = null;
+			try {
+				File f = new File(rexuizLauncherCfg);
+				input = new FileInputStream(f);
+				localProperties.load(input);
+				rexuizHomeDir = localProperties.getProperty("launcher.datadir", rexuizHomeDir);
+			} catch (Exception ex) {
+				//ignore
+			} finally {
+				if (input != null)
+					try {
+						input.close();
+					} catch (Exception ex) {
+						//ignore
+					}
+			}
 		}
-
 		int i, n;
 		for (i = 0; i < 100; i++) {
 			if (properties.getProperty("launcher.url" + Integer.toString(i), "") == "")
@@ -104,12 +142,41 @@ public class Runner extends Fetcher {
 		}
 	}
 	private void prepareToRun() throws RunnerException, FetcherException, FileList.FileListException, FileListItem.FileListItemException {
+		notInstalled = false;
+		if (!(new File(rexuizHomeDir + File.separator + "index.lst")).exists()) {
+			notInstalled = true;
+			String tmp = rexuizHomeDir;
+			rexuizHomeDir = askDestinationFolder(rexuizHomeDir);
+			if (!rexuizHomeDir.equals(tmp) && !rexuizHomeDir.equals("")) {
+				localProperties.setProperty("launcher.datadir", rexuizHomeDir);;
+				OutputStream out = null;
+				try {
+					out = new FileOutputStream(new File(rexuizLauncherCfg));
+					localProperties.store(out, "Rexuiz Launcher config file");
+				} catch (Exception ex) {
+					//ignore
+				} finally {
+					if (out != null)
+						try {
+							out.close();
+						} catch (Exception ex) {
+							//ignore
+						}
+				}
+			}
+		}
+		if (rexuizHomeDir == "")
+			return;
+
 		this.status("Check for updates");
 		String oldList = rexuizHomeDir + File.separator + "index.lst";
 		FileList oldFileList = new FileList(oldList);
 		Iterator<Map.Entry<String, FileListItem>> iterator;
 		if (oldFileList.isEmpty())
 			notInstalled = true;
+		else
+			notInstalled = false;
+
 		String syncURL = "";
 		String updateList = rexuizHomeDir + File.separator + "index.lst.update";
 		this.setConnectTimeout(1000); //Avoid long waiting
@@ -167,27 +234,20 @@ public class Runner extends Fetcher {
 	private void runRexuiz() throws RunnerException {
 		this.status("Running");
 		String rexuizExe = rexuizHomeDir + File.separator;
-		String osName = System.getProperty("os.name").toLowerCase();
-		String osArch = System.getProperty("os.arch").toLowerCase();
-		boolean is64 = false;
-		if (osArch.contains("64")) {
-			is64 = true;
-		}
-		if (osName.contains("win")) {
-			if (is64) {
+		if (isWin) {
+			if (is64)
 				rexuizExe += AppConstants.runExeWin64;
-			} else {
+			else
 				rexuizExe += AppConstants.runExeWin32;
-			}
-		} else if (osName.contains("mac")) {
+		} else if (isMac) {
 			rexuizExe += AppConstants.runExeMac;
 			(new File(rexuizExe)).setExecutable(true, false);
-		} else if (osName.contains("linux")) {
-			if (is64) {
+		} else {
+			if (is64)
 				rexuizExe += AppConstants.runExeLinux64;
-			} else {
+			else
 				rexuizExe += AppConstants.runExeLinux32;
-			}
+
 			(new File(rexuizExe)).setExecutable(true, false);
 		}
 
