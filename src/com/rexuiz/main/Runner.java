@@ -210,8 +210,18 @@ public class Runner extends Fetcher {
 				newFileList.remove(mentry.getKey());
 			}
 		}
+		iterator = newFileList.entrySet().iterator();
+		float updateSize = 0;
+		while (iterator.hasNext()) {
+			mentry = iterator.next();
+			itemNew = newFileList.get(mentry.getKey());
+			updateSize += itemNew.size;
+			System.out.println(Long.toString(itemNew.size));
+		}
+		String updateSizeForm = String.format("%.01f", updateSize / 1000000.0f) + "MB";
+		//String updateSizeForm = Float.toString(updateSize);
 
-		if (!newFileList.isEmpty() && ask(notInstalled ? "Install Rexuiz now?" : "Update available. Do you want install it?")) {
+		if (!newFileList.isEmpty() && ask((notInstalled ? "Install Rexuiz now?" : "Update available. Do you want install it?") + " Download data size: " + updateSizeForm)) {
 			notInstalled = true;
 			update(syncURL, newFileList);
 			clear();
