@@ -25,31 +25,26 @@ public class FileListItem {
 			return true;
 		}
 
-		FileInputStream fin = null;
 		MessageDigest messageDigest;
-		try {
+
+		try (FileInputStream fin = new FileInputStream(path)){
 			messageDigest = MessageDigest.getInstance("MD5");
 			final byte data[] = new byte[BLOCK_SIZE];
-			fin = new FileInputStream(path);
 			int count;
 			while ((count = fin.read(data, 0, BLOCK_SIZE)) > 0) {
 				messageDigest.update(data, 0, count);
 			}
 		} catch (Exception ex) {
 			throw new FileListItemException(path + ":\n" + ex.getMessage());
-		} finally {
-			if (fin != null) {
-				try {
-					fin.close();
-				} catch (Exception ex) {
-				}
-			}
 		}
+
 		byte[] digest = messageDigest.digest();
 		String hashReal = DatatypeConverter.printHexBinary(digest).toLowerCase();
+
 		if (hash.equals(hashReal)) {
 			return true;
 		}
+
 		return false;
 	}
 
