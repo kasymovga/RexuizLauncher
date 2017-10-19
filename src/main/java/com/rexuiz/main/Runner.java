@@ -13,11 +13,7 @@ import java.util.logging.Logger;
 
 public class Runner extends Fetcher {
 
-	public class RunnerException extends Exception {
-		RunnerException(String message) { super(message); }
-	}
-
-	private static final Logger log = Logger.getLogger(Runner.class.getName());
+    private static final Logger log = Logger.getLogger(Runner.class.getName());
 	private String rexuizHomeDir;
 	private String rexuizLauncherCfg;
 	private boolean notInstalled;
@@ -127,7 +123,6 @@ public class Runner extends Fetcher {
 		iterator = newFileList.entrySet().iterator();
 		this.setDownloadSize(totalSize);
 		this.status("Installing");
-		String zipSource;
 		FileListItem item;
 		while (iterator.hasNext()) {
 			mentry = iterator.next();
