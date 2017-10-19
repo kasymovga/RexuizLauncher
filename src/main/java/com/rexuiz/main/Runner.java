@@ -282,7 +282,6 @@ public class Runner extends Fetcher {
 		}
 
 
-		String[] cmd = { rexuizExe };
 		try {
 			Process p = new ProcessBuilder(rexuizExe).directory(new File(rexuizHomeDir)).start();
 			inheritIO(p.getInputStream(), System.out);
