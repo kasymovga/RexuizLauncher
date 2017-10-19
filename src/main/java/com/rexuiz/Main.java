@@ -1,4 +1,6 @@
-package com.rexuiz.main;
+package com.rexuiz;
+
+import com.rexuiz.main.Runner;
 
 import java.util.logging.Logger;
 

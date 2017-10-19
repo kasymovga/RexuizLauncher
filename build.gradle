@@ -20,6 +20,16 @@ repositories {
 }
 
 dependencies {
+
+    // Apache libs
+    compile "org.apache.commons:commons-lang3:3.6"
+    compile "commons-io:commons-io:2.5"
+    compile "commons-net:commons-net:3.6"
+
+    // Google libs
+    compile "com.google.guava:guava:23.0"
+
+    // Test
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 
@@ -27,6 +37,6 @@ jar {
     manifest {
         attributes 'Implementation-Title': 'RexuizLauncher',
                 'Implementation-Version': version,
-                'Main-Class': 'com.rexuiz.main.Main'
+                'Main-Class': 'com.rexuiz.Main'
     }
 }
