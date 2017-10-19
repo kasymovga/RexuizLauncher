@@ -20,18 +20,20 @@ public class FileListItem {
 		if (size != (new File(path)).length()) {
 			return false;
 		}
-		if (hash.equals(""))
+
+		if (hash.isEmpty()) {
 			return true;
+		}
 
 		FileInputStream fin = null;
-		MessageDigest md = null;
+		MessageDigest messageDigest;
 		try {
-			md = MessageDigest.getInstance("MD5");
+			messageDigest = MessageDigest.getInstance("MD5");
 			final byte data[] = new byte[BLOCK_SIZE];
 			fin = new FileInputStream(path);
 			int count;
 			while ((count = fin.read(data, 0, BLOCK_SIZE)) > 0) {
-				md.update(data, 0, count);
+				messageDigest.update(data, 0, count);
 			}
 		} catch (Exception ex) {
 			throw new FileListItemException(path + ":\n" + ex.getMessage());
@@ -43,7 +45,7 @@ public class FileListItem {
 				}
 			}
 		}
-		byte[] digest = md.digest();
+		byte[] digest = messageDigest.digest();
 		String hashReal = DatatypeConverter.printHexBinary(digest).toLowerCase();
 		if (hash.equals(hashReal)) {
 			return true;

@@ -75,7 +75,7 @@ public class Fetcher extends GraphicalUserInterface {
 					this.progress((double)(downloaded + targetSize * ((double)downloadedPart / size)) / totalSize);
 				}
 			}
-			if (hash.length() > 0) {
+			if (!hash.isEmpty()) {
 				if (!FileListItem.checkFile(destination, hash, size))
 					return false;
 			}
