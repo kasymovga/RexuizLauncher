@@ -4,9 +4,6 @@ import java.util.*;
 import java.io.*;
 
 public class FileList extends HashMap<String, FileListItem> {
-	public class FileListException  extends Exception {
-		FileListException(String message) { super(message); }
-	}
 	public FileList(String path) throws FileListException {
 		BufferedReader br = null;
 		FileInputStream in = null;

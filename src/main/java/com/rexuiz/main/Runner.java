@@ -1,6 +1,7 @@
 package com.rexuiz.main;
 
 import com.rexuiz.file.FileList;
+import com.rexuiz.file.FileListException;
 import com.rexuiz.file.FileListItem;
 import com.rexuiz.file.FileListItemException;
 import com.rexuiz.utils.LauncherUtils;
@@ -147,7 +148,7 @@ public class Runner extends Fetcher {
 			}
 		}
 	}
-	private void prepareToRun() throws RunnerException, FetcherException, FileList.FileListException, FileListItemException {
+	private void prepareToRun() throws RunnerException, FetcherException, FileListException, FileListItemException {
 		notInstalled = false;
 		if (!(new File(rexuizHomeDir + File.separator + "index.lst")).exists()) {
 			notInstalled = true;
@@ -290,7 +291,7 @@ public class Runner extends Fetcher {
 			message(ex.getMessage());
 		} catch (RunnerException ex) {
 			message(ex.getMessage());
-		} catch (FileList.FileListException ex) {
+		} catch (FileListException ex) {
 			message(ex.getMessage());
 		} catch (FileListItemException ex) {
 			message(ex.getMessage());
