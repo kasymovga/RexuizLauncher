@@ -22,9 +22,9 @@ public class DigestUtils {
 		return r.toString();
 	}
 
-	public static boolean checkFile(String path, String hash, long size)
+	public static boolean checkFile(String filePath, String hash, long size)
 			throws IOException, NoSuchAlgorithmException {
-		Path nioPath = Paths.get(path);
+		Path nioPath = Paths.get(filePath);
 		long fileSize = Files.size(nioPath);
 
 		if (fileSize != size) {
