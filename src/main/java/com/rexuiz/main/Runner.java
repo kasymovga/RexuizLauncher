@@ -49,47 +49,37 @@ public class Runner extends Fetcher {
 
 		rexuizHomeDir = buildAppHome();
 		Properties properties = new Properties();
-		InputStream input = null;
-		try {
-			input = Thread.currentThread().getContextClassLoader().getResourceAsStream("launcher.properties");
+
+		try (InputStream input =
+					 Thread.currentThread().getContextClassLoader().getResourceAsStream("launcher.properties")) {
+
 			if (input != null) {
 				properties.load(input);
 			}
 		} catch (IOException e) {
 			//ignore
-		} finally {
-			if (input != null)
-				try {
-					input.close();
-				} catch (Exception ex) {
-					log.log(Level.ALL, ex.getLocalizedMessage());
-				}
 		}
+
 		if (properties.getProperty("launcher.mode", "").equals("updater")) {
 			try {
-				rexuizHomeDir = (new File(Runner.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath())).getParentFile().getPath();
+				rexuizHomeDir = (new File(Runner.class.getProtectionDomain()
+						.getCodeSource()
+						.getLocation()
+						.toURI()
+						.getPath())).getParentFile().getPath();
 			} catch (Exception ex) {
 				log.log(Level.ALL, ex.getLocalizedMessage());
 			}
 		} else {
 			rexuizLauncherCfg = System.getProperty("user.home") + File.separator + ((isLinux || isMac) ? "." : "") + AppConstants.cfgName;
-			input = null;
-			try {
-				File f = new File(rexuizLauncherCfg);
-				input = new FileInputStream(f);
+			try (InputStream input = new FileInputStream(new File(rexuizLauncherCfg))) {
 				localProperties.load(input);
 				rexuizHomeDir = localProperties.getProperty("launcher.datadir", rexuizHomeDir);
 			} catch (Exception ex) {
 				//ignore
-			} finally {
-				if (input != null)
-					try {
-						input.close();
-					} catch (Exception ex) {
-						//ignore
-					}
 			}
 		}
+
 		int i, n;
 		for (i = 0; i < 100; i++) {
 			if (properties.getProperty("launcher.url" + Integer.toString(i), "").isEmpty()) {
