@@ -1,10 +1,10 @@
 package com.rexuiz.gui;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.*;
-import javax.imageio.*;
-import java.io.*;
+import java.awt.image.BufferedImage;
+import java.io.InputStream;
 
 public class GraphicalUserInterface extends JFrame {
 	private JLabel statusLabel;
@@ -105,15 +105,19 @@ public class GraphicalUserInterface extends JFrame {
 	public void message(String msg) {
 		JOptionPane.showMessageDialog(this, msg);
 	}
+
 	public String askDestinationFolder(String dest) {
 		JFrame frame = new JFrame();
 		frame.setIconImage(icon);
 		String[] options = new String[2];
-		options[0] = new String("Use this folder");
-		options[1] = new String("Another location");
+		options[0] = "Use this folder";
+		options[1] = "Another location";
 		int answer;
 		for (;;) {
-			answer = JOptionPane.showOptionDialog(frame.getContentPane(), "Location for Rexuiz install: " + dest, "Confirm install location", 0, JOptionPane.INFORMATION_MESSAGE, null, options, null);
+			answer = JOptionPane.showOptionDialog(frame.getContentPane(), "Location for Rexuiz install: "
+					+ dest, "Confirm install location", 0, JOptionPane.INFORMATION_MESSAGE, null,
+					options, null);
+
 			if (answer == JOptionPane.CLOSED_OPTION)
 				return "";
 
