@@ -222,7 +222,8 @@ public class Runner extends Fetcher {
 			updateSize += itemNew.size;
 			System.out.println(Long.toString(itemNew.size));
 		}
-		String updateSizeForm = String.format("%.01f", updateSize / 1000000.0f) + "MB";
+
+		String updateSizeForm = convertByteToMb(updateSize);
 
 		if (!newFileList.isEmpty() && ask((notInstalled ? "Install Rexuiz now?"
                 : "Update available. Do you want install it?") + " Download data size: " + updateSizeForm)) {
@@ -235,6 +236,11 @@ public class Runner extends Fetcher {
 			notInstalled = false;
 		}
 	}
+
+	private String convertByteToMb(float updateSize) {
+		return String.format("%.01f", updateSize / 1000000.0f) + "MB";
+	}
+
 	private static void inheritIO(final InputStream src, final PrintStream dest) {
 		new Thread(new Runnable() {
 			public void run() {
