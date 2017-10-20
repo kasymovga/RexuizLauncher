@@ -21,4 +21,8 @@ public class LauncherUtils {
 			return ProcessorArch.X32;
 		}
 	}
+
+	public static String getUserHomeDir() {
+		return System.getProperty("user.home");
+	}
 }

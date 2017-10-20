@@ -2,6 +2,7 @@ package com.rexuiz.main;
 
 import com.rexuiz.file.FileList;
 import com.rexuiz.file.FileListItem;
+import com.rexuiz.utils.LauncherUtils;
 
 import java.io.*;
 import java.util.Iterator;
@@ -46,7 +47,7 @@ public class Runner extends Fetcher {
 			isLinux = true;
 		}
 
-		rexuizHomeDir = System.getProperty("user.home") + File.separator + AppConstants.homeDir;
+		rexuizHomeDir = buildAppHome();
 		Properties properties = new Properties();
 		InputStream input = null;
 		try {
@@ -106,6 +107,11 @@ public class Runner extends Fetcher {
 		}
 
 	}
+
+	private String buildAppHome() {
+		return LauncherUtils.getUserHomeDir() + File.separator + AppConstants.homeDir;
+	}
+
 	private void update(String syncURL, FileList newFileList) throws RunnerException, FetcherException, FileListItem.FileListItemException {
 		Iterator<Map.Entry<String, FileListItem>> iterator;
 		Map.Entry<String, FileListItem> mentry;
