@@ -16,7 +16,7 @@ public class Fetcher extends GraphicalUserInterface {
 	private long totalSize;
 	private long downloaded;
 	private final int BLOCK_SIZE = 10240;
-	private HashSet<String> zipFiles = new HashSet<String>();
+	private HashSet<String> zipFiles = new HashSet<>();
 	private int connectTimeout = 3000;
 	private int readTimeout = 3000;
 
@@ -128,7 +128,7 @@ public class Fetcher extends GraphicalUserInterface {
 			throw new FetcherException("Unpacking failed :\n" + source + " -> " + destination + "\n" + ex.getMessage());
 		}
 
-		return (hash.length() > 0 ? FileListItem.checkFile(destination, hash, size) : true);
+		return (!hash.isEmpty() ? FileListItem.checkFile(destination, hash, size) : true);
 	}
 	public boolean downloadAndExtract(
 			String source,
@@ -168,7 +168,7 @@ public class Fetcher extends GraphicalUserInterface {
 		return false;
 	}
 	public void clear() {
-		String filePath = null;
+		String filePath;
 		for (Iterator<String> iter = zipFiles.iterator(); iter.hasNext(); ) {
 			filePath = iter.next();
 			(new File(filePath)).delete();
