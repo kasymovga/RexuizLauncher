@@ -38,6 +38,7 @@ jar {
     manifest {
         attributes 'Implementation-Title': 'RexuizLauncher',
                 'Implementation-Version': version,
-                'Main-Class': 'com.rexuiz.Main'
+                'Main-Class': 'com.rexuiz.Main',
+                'Multi-Release': true
     }
 }
