@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/RexuizLauncher.iml" filepath="$PROJECT_DIR$/.idea/RexuizLauncher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/RexuizLauncher_main.iml" filepath="$PROJECT_DIR$/.idea/modules/RexuizLauncher_main.iml" group="RexuizLauncher" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/RexuizLauncher_test.iml" filepath="$PROJECT_DIR$/.idea/modules/RexuizLauncher_test.iml" group="RexuizLauncher" />
     </modules>
   </component>
 </project>
