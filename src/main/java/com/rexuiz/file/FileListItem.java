@@ -6,9 +6,6 @@ import java.io.FileInputStream;
 import java.security.MessageDigest;
 
 public class FileListItem {
-	static public class FileListItemException  extends Exception {
-		FileListItemException(String message) { super(message); }
-	}
 	final public String hash;
 	final public long size;
 	final public String zipSource;
@@ -18,7 +15,7 @@ public class FileListItem {
 	final public long zipSize;
 	private static final int BLOCK_SIZE = 1024;
 
-	static public boolean checkFile(String path, String hash, long size) throws FileListItemException {
+	public static boolean checkFile(String path, String hash, long size) throws FileListItemException {
 		if (size != (new File(path)).length()) {
 			return false;
 		}
@@ -41,15 +38,9 @@ public class FileListItem {
 		}
 
 		byte[] digest = messageDigest.digest();
-
 		String hashReal = DigestUtils.printHexBinary(digest).toLowerCase();
 
-		if (MessageDigest.isEqual(hashReal.getBytes(), hash.getBytes())) {
-			return true;
-		}
-
-
-		return false;
+		return MessageDigest.isEqual(hashReal.getBytes(), hash.getBytes());
 	}
 
 	public FileListItem(String hash, long size) {

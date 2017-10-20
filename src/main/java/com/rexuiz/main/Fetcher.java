@@ -1,5 +1,6 @@
 package com.rexuiz.main;
 
+import com.rexuiz.file.FileListItemException;
 import com.rexuiz.gui.GraphicalUserInterface;
 import com.rexuiz.file.FileListItem;
 
@@ -38,12 +39,12 @@ public class Fetcher extends GraphicalUserInterface {
 	}
 
 	public boolean download(String source, String destination, String hash, long size) throws FetcherException,
-			FileListItem.FileListItemException {
+			FileListItemException {
 		return download(source, destination, hash, size, size);
 	}
 
 	private boolean download(String source, String destination, String hash, long size, long targetSize)
-			throws FetcherException, FileListItem.FileListItemException {
+			throws FetcherException, FileListItemException {
 		BufferedInputStream in = null;
 		FileOutputStream fout = null;
 		if (hash.length() > 0 && FileListItem.checkFile(destination, hash, size)) {
@@ -98,7 +99,7 @@ public class Fetcher extends GraphicalUserInterface {
 		return true;
 	}
 	public boolean extract(String source, String subsource, String destination, String hash, long size)
-			throws FetcherException, FileListItem.FileListItemException {
+			throws FetcherException, FileListItemException {
 
 		FileInputStream fin;
 		BufferedInputStream bin;
@@ -139,7 +140,7 @@ public class Fetcher extends GraphicalUserInterface {
 			String zipFilePath,
 			String zipHash,
 			long zipSize
-	) throws FetcherException, FileListItem.FileListItemException {
+	) throws FetcherException, FileListItemException {
 		if (zipFiles.contains(zipDestination)) {
 			if (totalSize > 0)
 				downloaded += size;
@@ -158,7 +159,7 @@ public class Fetcher extends GraphicalUserInterface {
 				downloaded -= size; //Extracting failed
 
 			throw ex;
-		} catch (FileListItem.FileListItemException ex) { //Forgive me for this code duplication
+		} catch (FileListItemException ex) { //Forgive me for this code duplication
 			if (totalSize > 0)
 				downloaded -= size; //Extracting failed
 

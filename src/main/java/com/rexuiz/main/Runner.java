@@ -2,6 +2,7 @@ package com.rexuiz.main;
 
 import com.rexuiz.file.FileList;
 import com.rexuiz.file.FileListItem;
+import com.rexuiz.file.FileListItemException;
 import com.rexuiz.utils.LauncherUtils;
 
 import java.io.*;
@@ -102,7 +103,7 @@ public class Runner extends Fetcher {
 		return LauncherUtils.getUserHomeDir() + File.separator + AppConstants.homeDir;
 	}
 
-	private void update(String syncURL, FileList newFileList) throws RunnerException, FetcherException, FileListItem.FileListItemException {
+	private void update(String syncURL, FileList newFileList) throws RunnerException, FetcherException, FileListItemException {
 		Iterator<Map.Entry<String, FileListItem>> iterator;
 		Map.Entry<String, FileListItem> mentry;
 		String filePath;
@@ -146,7 +147,7 @@ public class Runner extends Fetcher {
 			}
 		}
 	}
-	private void prepareToRun() throws RunnerException, FetcherException, FileList.FileListException, FileListItem.FileListItemException {
+	private void prepareToRun() throws RunnerException, FetcherException, FileList.FileListException, FileListItemException {
 		notInstalled = false;
 		if (!(new File(rexuizHomeDir + File.separator + "index.lst")).exists()) {
 			notInstalled = true;
@@ -291,7 +292,7 @@ public class Runner extends Fetcher {
 			message(ex.getMessage());
 		} catch (FileList.FileListException ex) {
 			message(ex.getMessage());
-		} catch (FileListItem.FileListItemException ex) {
+		} catch (FileListItemException ex) {
 			message(ex.getMessage());
 		} catch (Exception ex) {
 			message("Error:\n" + ex.getMessage());
