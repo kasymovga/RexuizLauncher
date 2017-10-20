@@ -37,15 +37,13 @@ public class Fetcher extends GraphicalUserInterface {
 		totalSize = newTotalSize;
 	}
 
-	public class FetcherException extends Exception {
-		public FetcherException(String message) { super(message); }
-	}
-
-	public boolean download(String source, String destination, String hash, long size) throws FetcherException, FileListItem.FileListItemException {
+	public boolean download(String source, String destination, String hash, long size) throws FetcherException,
+			FileListItem.FileListItemException {
 		return download(source, destination, hash, size, size);
 	}
 
-	public boolean download(String source, String destination, String hash, long size, long targetSize) throws FetcherException, FileListItem.FileListItemException {
+	private boolean download(String source, String destination, String hash, long size, long targetSize)
+			throws FetcherException, FileListItem.FileListItemException {
 		BufferedInputStream in = null;
 		FileOutputStream fout = null;
 		if (hash.length() > 0 && FileListItem.checkFile(destination, hash, size)) {
@@ -72,7 +70,7 @@ public class Fetcher extends GraphicalUserInterface {
 				if (size > 0) {
 					downloadedPart += count;
 					this.subProgress((double)downloadedPart / size, "Downloading");
-					this.progress((double)(downloaded + targetSize * ((double)downloadedPart / size)) / totalSize);
+					this.progress((downloaded + targetSize * ((double)downloadedPart / size)) / totalSize);
 				}
 			}
 			if (!hash.isEmpty()) {
@@ -82,7 +80,7 @@ public class Fetcher extends GraphicalUserInterface {
 			if (totalSize > 0)
 				downloaded += targetSize;
 		} catch (Exception ex) {
-			throw new Fetcher.FetcherException("Downloading failed :\n" + source + " -> " + destination + "\n" + ex.getMessage());
+			throw new FetcherException("Downloading failed :\n" + source + " -> " + destination + "\n" + ex.getMessage());
 		} finally {
 			if (in != null) {
 				try {
@@ -100,12 +98,11 @@ public class Fetcher extends GraphicalUserInterface {
 		return true;
 	}
 	public boolean extract(String source, String subsource, String destination, String hash, long size) throws FetcherException, FileListItem.FileListItemException {
-		OutputStream out = null;
 		FileInputStream fin = null;
 		BufferedInputStream bin = null;
 		ZipInputStream zin = null;
-		try {
-			out = new FileOutputStream(destination);
+		try (OutputStream out = new FileOutputStream(destination)) {
+
 			fin = new FileInputStream(source);
 			bin = new BufferedInputStream(fin);
 			zin = new ZipInputStream(bin);
@@ -125,15 +122,13 @@ public class Fetcher extends GraphicalUserInterface {
 					break;
 				}
 		} catch (Exception ex) {
-			throw new Fetcher.FetcherException("Unpacking failed :\n" + source + " -> " + destination + "\n" + ex.getMessage());
+			throw new FetcherException("Unpacking failed :\n" + source + " -> " + destination + "\n" + ex.getMessage());
 		} finally {
 			try {
-				if (out != null)
-					out.close();
-
 				if (zin != null)
 					zin.close();
 			} catch (Exception e) {
+
 			}
 		}
 		return (hash.length() > 0 ? FileListItem.checkFile(destination, hash, size) : true);

@@ -157,20 +157,11 @@ public class Runner extends Fetcher {
 			String tmp = rexuizHomeDir;
 			rexuizHomeDir = askDestinationFolder(rexuizHomeDir);
 			if (!rexuizHomeDir.equals(tmp) && !rexuizHomeDir.equals("")) {
-				localProperties.setProperty("launcher.datadir", rexuizHomeDir);;
-				OutputStream out = null;
-				try {
-					out = new FileOutputStream(new File(rexuizLauncherCfg));
+				localProperties.setProperty("launcher.datadir", rexuizHomeDir);
+				try (OutputStream out = new FileOutputStream(new File(rexuizLauncherCfg))) {
 					localProperties.store(out, "Rexuiz Launcher config file");
 				} catch (Exception ex) {
 					//ignore
-				} finally {
-					if (out != null)
-						try {
-							out.close();
-						} catch (Exception ex) {
-							//ignore
-						}
 				}
 			}
 		}
@@ -234,7 +225,6 @@ public class Runner extends Fetcher {
 			System.out.println(Long.toString(itemNew.size));
 		}
 		String updateSizeForm = String.format("%.01f", updateSize / 1000000.0f) + "MB";
-		//String updateSizeForm = Float.toString(updateSize);
 
 		if (!newFileList.isEmpty() && ask((notInstalled ? "Install Rexuiz now?"
                 : "Update available. Do you want install it?") + " Download data size: " + updateSizeForm)) {
