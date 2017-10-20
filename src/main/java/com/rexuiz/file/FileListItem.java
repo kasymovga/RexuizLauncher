@@ -1,7 +1,9 @@
 package com.rexuiz.file;
-import java.io.*;
-import java.security.*;
-import javax.xml.bind.*;
+import com.rexuiz.utils.DigestUtils;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.security.MessageDigest;
 
 public class FileListItem {
 	static public class FileListItemException  extends Exception {
@@ -39,11 +41,13 @@ public class FileListItem {
 		}
 
 		byte[] digest = messageDigest.digest();
-		String hashReal = DatatypeConverter.printHexBinary(digest).toLowerCase();
 
-		if (hash.equals(hashReal)) {
+		String hashReal = DigestUtils.printHexBinary(digest).toLowerCase();
+
+		if (MessageDigest.isEqual(hashReal.getBytes(), hash.getBytes())) {
 			return true;
 		}
+
 
 		return false;
 	}
