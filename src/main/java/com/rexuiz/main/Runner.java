@@ -248,12 +248,14 @@ public class Runner extends Fetcher {
 		}
 	}
 	private static void inheritIO(final InputStream src, final PrintStream dest) {
-		new Thread(() -> {
-            Scanner sc = new Scanner(src);
-            while (sc.hasNextLine()) {
-                dest.println(sc.nextLine());
-            }
-        }).start();
+		new Thread(new Runnable() {
+			public void run() {
+				Scanner sc = new Scanner(src);
+				while (sc.hasNextLine()) {
+					dest.println(sc.nextLine());
+				}
+			}
+		}).start();
 	}
 	private void runRexuiz() throws RunnerException {
 		this.status("Running");

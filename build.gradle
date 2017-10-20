@@ -4,8 +4,9 @@ apply plugin: 'java'
 apply plugin: 'idea'
 
 version = '0.8.1'
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+// minimal jre requirements
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 buildscript {
     repositories {
