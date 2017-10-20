@@ -97,40 +97,37 @@ public class Fetcher extends GraphicalUserInterface {
 		}
 		return true;
 	}
-	public boolean extract(String source, String subsource, String destination, String hash, long size) throws FetcherException, FileListItem.FileListItemException {
-		FileInputStream fin = null;
-		BufferedInputStream bin = null;
-		ZipInputStream zin = null;
-		try (OutputStream out = new FileOutputStream(destination)) {
+	public boolean extract(String source, String subsource, String destination, String hash, long size)
+			throws FetcherException, FileListItem.FileListItemException {
 
+		FileInputStream fin;
+		BufferedInputStream bin;
+
+		try (OutputStream out = new FileOutputStream(destination)) {
 			fin = new FileInputStream(source);
 			bin = new BufferedInputStream(fin);
-			zin = new ZipInputStream(bin);
-			ZipEntry ze = null;
-			long extracted = 0;
-			while ((ze = zin.getNextEntry()) != null)
-				if (ze.getName().equals(subsource)) {
-					byte[] buffer = new byte[BLOCK_SIZE];
-					int len;
-					while ((len = zin.read(buffer)) != -1) {
-						out.write(buffer, 0, len);
-						if (size > 0) {
-							extracted += len;
-							subProgress((double)(extracted) / size, "Extracting");
+			try (ZipInputStream zin = new ZipInputStream(bin)){
+				ZipEntry ze;
+				long extracted = 0;
+				while ((ze = zin.getNextEntry()) != null)
+					if (ze.getName().equals(subsource)) {
+						byte[] buffer = new byte[BLOCK_SIZE];
+						int len;
+						while ((len = zin.read(buffer)) != -1) {
+							out.write(buffer, 0, len);
+							if (size > 0) {
+								extracted += len;
+								subProgress((double)(extracted) / size, "Extracting");
+							}
 						}
+						break;
 					}
-					break;
-				}
+			}
+
 		} catch (Exception ex) {
 			throw new FetcherException("Unpacking failed :\n" + source + " -> " + destination + "\n" + ex.getMessage());
-		} finally {
-			try {
-				if (zin != null)
-					zin.close();
-			} catch (Exception e) {
-
-			}
 		}
+
 		return (hash.length() > 0 ? FileListItem.checkFile(destination, hash, size) : true);
 	}
 	public boolean downloadAndExtract(
