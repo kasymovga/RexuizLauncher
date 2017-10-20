@@ -71,7 +71,7 @@ public class Runner extends Fetcher {
 				log.log(Level.ALL, ex.getLocalizedMessage());
 			}
 		} else {
-			rexuizLauncherCfg = System.getProperty("user.home") + File.separator + ((isLinux || isMac) ? "." : "") + AppConstants.cfgName;
+			rexuizLauncherCfg = LauncherUtils.getUserHomeDir() + File.separator + ((isLinux || isMac) ? "." : "") + AppConstants.cfgName;
 			try (InputStream input = new FileInputStream(new File(rexuizLauncherCfg))) {
 				localProperties.load(input);
 				rexuizHomeDir = localProperties.getProperty("launcher.datadir", rexuizHomeDir);
