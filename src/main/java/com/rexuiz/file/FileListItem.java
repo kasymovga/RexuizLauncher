@@ -8,11 +8,21 @@ import java.security.MessageDigest;
 public class FileListItem {
 	final public String hash;
 	final public long size;
-	final public String zipSource;
-	final public String zipSourceName;
-	final public String zipFilePath;
-	final public String zipHash;
-	final public long zipSize;
+	public class ZipAdditionalSource {
+		final public String source;
+		final public String name;
+		final public String filePath;
+		final public String hash;
+		final public long size;
+		public ZipAdditionalSource(String source, String name, String filePath, String hash, long size) {
+			this.source = source;
+			this.name = name;
+			this.filePath = filePath;
+			this.hash = hash;
+			this.size = size;
+		}
+	}
+	public final ZipAdditionalSource zipAdditionSource;
 	private static final int BLOCK_SIZE = 1024;
 
 	public static boolean checkFile(String path, String hash, long size) throws FileListItemException {
@@ -46,19 +56,11 @@ public class FileListItem {
 	public FileListItem(String hash, long size) {
 		this.hash = hash;
 		this.size = size;
-		this.zipSource = "";
-		this.zipSourceName = "";
-		this.zipFilePath = "";
-		this.zipSize = 0;
-		this.zipHash = "";
+		this.zipAdditionSource = null;
 	}
 	public FileListItem(String hash, long size, String zipSource, String zipSourceName, String zipFilePath, String zipHash, long zipSize) {
 		this.hash = hash;
 		this.size = size;
-		this.zipSource = zipSource;
-		this.zipSourceName = zipSourceName;
-		this.zipFilePath = zipFilePath;
-		this.zipHash = zipHash;
-		this.zipSize = zipSize;
+		this.zipAdditionSource = new ZipAdditionalSource(zipSource, zipSourceName, zipFilePath, zipHash, zipSize);
 	}
 }

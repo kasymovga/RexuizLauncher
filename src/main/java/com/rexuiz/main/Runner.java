@@ -127,16 +127,16 @@ public class Runner extends Fetcher {
 			filePath = (rexuizHomeDir + File.separator + mentry.getKey()).replace("/", File.separator);
 			item = mentry.getValue();
 			boolean needDownload = true;;
-			if (!item.zipSource.equals("")) {
+			if (item.zipAdditionSource != null) {
 				try {
-					needDownload = !downloadAndExtract(item.zipSource,
+					needDownload = !downloadAndExtract(item.zipAdditionSource.source,
 					                   filePath,
 					                   item.hash,
 					                   item.size,
-					                   rexuizHomeDir + File.separator + item.zipSourceName,
-					                   item.zipFilePath,
-					                   item.zipHash,
-					                   item.zipSize);
+					                   rexuizHomeDir + File.separator + item.zipAdditionSource.name,
+					                   item.zipAdditionSource.filePath,
+					                   item.zipAdditionSource.hash,
+					                   item.zipAdditionSource.size);
 				} catch (Exception ex) {
 					log.log(Level.ALL, ex.getLocalizedMessage());
 					log.info("ignore and try another download usual way");
