@@ -26,9 +26,6 @@ public class IndexListReader {
 				if (items.length == 3) {
 					fileDtoMap.put(items[2], new FileDto.Builder(items[0], Integer.parseInt(items[1])).build());
 				} else if (items.length == 8) {
-					// TODO не понимаю зачем удалять ?
-					fileDtoMap.remove(items[2]);
-
 					FileDto fileDto = new FileDto.Builder(items[0], Long.parseLong(items[1]))
 							.zipSource(items[3])
 							.zipSourceName(items[4])
