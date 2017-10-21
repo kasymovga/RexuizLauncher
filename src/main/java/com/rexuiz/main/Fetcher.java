@@ -13,13 +13,18 @@ import java.util.zip.ZipInputStream;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class Fetcher extends GraphicalUserInterface {
+public class Fetcher {
 	private long totalSize;
 	private long downloaded;
 	private final int BLOCK_SIZE = 10240;
 	private HashSet<String> zipFiles = new HashSet<>();
 	private int connectTimeout = 3000;
 	private int readTimeout = 3000;
+	private GraphicalUserInterface gui;
+
+	public void setGUI(GraphicalUserInterface gui) {
+		this.gui = gui;
+	}
 
 	public void setConnectTimeout(int timeout) {
 		this.connectTimeout = timeout;
@@ -50,7 +55,8 @@ public class Fetcher extends GraphicalUserInterface {
 		if (hash.length() > 0 && FileListItem.checkFile(destination, hash, size)) {
 			downloaded += targetSize;
 			if (totalSize > 0)
-				this.progress((double)downloaded / (double)totalSize);
+				if (gui != null)
+					gui.progress((double)downloaded / (double)totalSize);
 
 			return true;
 		}
@@ -70,8 +76,10 @@ public class Fetcher extends GraphicalUserInterface {
 				fout.write(data, 0, count);
 				if (size > 0) {
 					downloadedPart += count;
-					this.subProgress((double)downloadedPart / size, "Downloading");
-					this.progress((downloaded + targetSize * ((double)downloadedPart / size)) / totalSize);
+					if (gui != null) {
+						gui.subProgress((double)downloadedPart / size, "Downloading");
+						gui.progress((downloaded + targetSize * ((double)downloadedPart / size)) / totalSize);
+					}
 				}
 			}
 			if (!hash.isEmpty()) {
@@ -118,7 +126,8 @@ public class Fetcher extends GraphicalUserInterface {
 							out.write(buffer, 0, len);
 							if (size > 0) {
 								extracted += len;
-								subProgress((double)(extracted) / size, "Extracting");
+								if (gui != null)
+									gui.subProgress((double)(extracted) / size, "Extracting");
 							}
 						}
 						break;

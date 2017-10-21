@@ -5,6 +5,7 @@ import com.rexuiz.file.FileListException;
 import com.rexuiz.file.FileListItem;
 import com.rexuiz.file.FileListItemException;
 import com.rexuiz.utils.LauncherUtils;
+import com.rexuiz.gui.GraphicalUserInterface;
 
 import java.io.*;
 import java.util.Iterator;
@@ -14,7 +15,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Runner extends Fetcher {
+public class Runner {
 
     private static final Logger log = Logger.getLogger(Runner.class.getName());
 	private String rexuizHomeDir;
@@ -24,8 +25,13 @@ public class Runner extends Fetcher {
 	private boolean isWin, isMac, isLinux, is64;
 	private Properties localProperties;
 	String[] syncURLs;
+	Fetcher fetcher;
+	GraphicalUserInterface gui;
 
 	public Runner() {
+		fetcher = new Fetcher();
+		gui = new GraphicalUserInterface();
+		fetcher.setGUI(gui);
 		String osName = System.getProperty("os.name").toLowerCase();
 		String osArch = System.getProperty("os.arch").toLowerCase();
 		notInstalled = false;
@@ -111,16 +117,16 @@ public class Runner extends Fetcher {
 		iterator = newFileList.entrySet().iterator();
 		long totalSize = 0;
 		FileListItem itemNew;
-		this.setConnectTimeout(10000);
-		this.setReadTimeout(10000);
+		fetcher.setConnectTimeout(10000);
+		fetcher.setReadTimeout(10000);
 		while (iterator.hasNext()) {
 			mentry = iterator.next();
 			itemNew = mentry.getValue();
 			totalSize += itemNew.size;
 		}
 		iterator = newFileList.entrySet().iterator();
-		this.setDownloadSize(totalSize);
-		this.status("Installing");
+		fetcher.setDownloadSize(totalSize);
+		gui.status("Installing");
 		FileListItem item;
 		while (iterator.hasNext()) {
 			mentry = iterator.next();
@@ -129,7 +135,7 @@ public class Runner extends Fetcher {
 			boolean needDownload = true;;
 			if (item.zipAdditionSource != null) {
 				try {
-					needDownload = !downloadAndExtract(item.zipAdditionSource.source,
+					needDownload = !fetcher.downloadAndExtract(item.zipAdditionSource.source,
 					                   filePath,
 					                   item.hash,
 					                   item.size,
@@ -142,7 +148,7 @@ public class Runner extends Fetcher {
 					log.info("ignore and try another download usual way");
 				}
 			}
-			if (needDownload && !download(syncURL + mentry.getKey(),
+			if (needDownload && !fetcher.download(syncURL + mentry.getKey(),
 					filePath, item.hash, item.size)) {
 				throw new RunnerException(filePath + ": file check failed");
 			}
@@ -153,7 +159,7 @@ public class Runner extends Fetcher {
 		if (!(new File(rexuizHomeDir + File.separator + "index.lst")).exists()) {
 			notInstalled = true;
 			String tmp = rexuizHomeDir;
-			rexuizHomeDir = askDestinationFolder(rexuizHomeDir);
+			rexuizHomeDir = gui.askDestinationFolder(rexuizHomeDir);
 			if (!rexuizHomeDir.equals(tmp) && !rexuizHomeDir.equals("")) {
 				localProperties.setProperty("launcher.datadir", rexuizHomeDir);
 				try (OutputStream out = new FileOutputStream(new File(rexuizLauncherCfg))) {
@@ -168,7 +174,7 @@ public class Runner extends Fetcher {
 			return;
 		}
 
-		this.status("Check for updates");
+		gui.status("Check for updates");
 		String oldList = rexuizHomeDir + File.separator + "index.lst";
 		FileList oldFileList = new FileList(oldList);
 		Iterator<Map.Entry<String, FileListItem>> iterator;
@@ -181,12 +187,12 @@ public class Runner extends Fetcher {
 
 		String syncURL = "";
 		String updateList = rexuizHomeDir + File.separator + "index.lst.update";
-		this.setConnectTimeout(1000); //Avoid long waiting
-		this.setReadTimeout(1000);
+		fetcher.setConnectTimeout(1000); //Avoid long waiting
+		fetcher.setReadTimeout(1000);
 		int i;
 		for (i = 0; i < syncURLs.length; i++) {
 			try {
-				download(syncURLs[i] + "index.lst", updateList, "", 0);
+				fetcher.download(syncURLs[i] + "index.lst", updateList, "", 0);
 				syncURL = syncURLs[i];
 				break;
 			} catch (Exception ex) {
@@ -225,11 +231,11 @@ public class Runner extends Fetcher {
 
 		String updateSizeForm = convertByteToMb(updateSize);
 
-		if (!newFileList.isEmpty() && ask((notInstalled ? "Install Rexuiz now?"
+		if (!newFileList.isEmpty() && gui.ask((notInstalled ? "Install Rexuiz now?"
                 : "Update available. Do you want install it?") + " Download data size: " + updateSizeForm)) {
 			notInstalled = true;
 			update(syncURL, newFileList);
-			clear();
+			fetcher.clear();
 			(new File(oldList)).delete();
 			(new File(updateList)).renameTo(new File(oldList));
 			wasInstalled = true;
@@ -252,7 +258,7 @@ public class Runner extends Fetcher {
 		}).start();
 	}
 	private void runRexuiz() throws RunnerException {
-		this.status("Running");
+		gui.status("Running");
 		String rexuizExe = rexuizHomeDir + File.separator;
 		if (isWin) {
 			if (is64) {
@@ -283,26 +289,26 @@ public class Runner extends Fetcher {
 		}
 	}
 	public void run() {
-		this.showMainDialog();
+		gui.showMainDialog();
 		try {
 			prepareToRun();
 			if (wasInstalled) {
-				if (this.ask("Rexuiz installed. Do you want run it?")) {
+				if (gui.ask("Rexuiz installed. Do you want run it?")) {
                     runRexuiz();
                 }
 			} else if (!notInstalled) {
 				runRexuiz();
 			}
 		} catch (FetcherException ex) {
-			message(ex.getMessage());
+			gui.message(ex.getMessage());
 		} catch (RunnerException ex) {
-			message(ex.getMessage());
+			gui.message(ex.getMessage());
 		} catch (FileListException ex) {
-			message(ex.getMessage());
+			gui.message(ex.getMessage());
 		} catch (FileListItemException ex) {
-			message(ex.getMessage());
+			gui.message(ex.getMessage());
 		} catch (Exception ex) {
-			message("Error:\n" + ex.getMessage());
+			gui.message("Error:\n" + ex.getMessage());
 			ex.printStackTrace(System.out);
 		}
 		System.exit(0);
