@@ -8,7 +8,7 @@ import java.security.MessageDigest;
 public class FileListItem {
 	final public String hash;
 	final public long size;
-	public class ZipAdditionalSource {
+	static public class ZipAdditionalSource {
 		final public String source;
 		final public String name;
 		final public String filePath;
@@ -22,7 +22,7 @@ public class FileListItem {
 			this.size = size;
 		}
 	}
-	public final ZipAdditionalSource zipAdditionSource;
+	public ZipAdditionalSource zipAdditionSource;
 	private static final int BLOCK_SIZE = 1024;
 
 	public static boolean checkFile(String path, String hash, long size) throws FileListItemException {
@@ -58,9 +58,13 @@ public class FileListItem {
 		this.size = size;
 		this.zipAdditionSource = null;
 	}
-	public FileListItem(String hash, long size, String zipSource, String zipSourceName, String zipFilePath, String zipHash, long zipSize) {
+	public FileListItem setZipAdditionalSource(ZipAdditionalSource zipAdditionSource) {
+		this.zipAdditionSource = zipAdditionSource;
+		return this;
+	}
+	public FileListItem(String hash, long size, ZipAdditionalSource zipAdditionSource) {
 		this.hash = hash;
 		this.size = size;
-		this.zipAdditionSource = new ZipAdditionalSource(zipSource, zipSourceName, zipFilePath, zipHash, zipSize);
+		this.zipAdditionSource = zipAdditionSource;
 	}
 }

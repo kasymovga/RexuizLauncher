@@ -31,13 +31,17 @@ public class FileList extends HashMap<String, FileListItem> {
 					this.remove(separated[2]);
 					this.put(separated[2], new FileListItem(
 							separated[0], //hash
-							Integer.parseInt(separated[1]), //size
-							separated[3], //zip source
-							separated[4], //zip name
-							separated[5], //zip file path
-							separated[6], //zip hash
-							Integer.parseInt(separated[7]) //zip size
-					));
+							Integer.parseInt(separated[1])
+						).setZipAdditionalSource( //size
+							new FileListItem.ZipAdditionalSource(
+								separated[3], //zip source
+								separated[4], //zip name
+								separated[5], //zip file path
+								separated[6], //zip hash
+								Integer.parseInt(separated[7]) //zip size
+							)
+						)
+					);
 				}
 			}
 		} catch (FileNotFoundException ex) {
